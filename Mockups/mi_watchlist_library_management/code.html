@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HoySeVe - My Watchlist</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed-dim": "#f3bf26",
+              "surface-tint": "#00daf3",
+              "on-tertiary": "#3e2e00",
+              "on-primary-container": "#00626e",
+              "background": "#10141a",
+              "secondary": "#98d0da",
+              "on-surface": "#dfe2eb",
+              "on-secondary": "#00363d",
+              "on-surface-variant": "#bac9cc",
+              "surface-container-low": "#181c22",
+              "secondary-fixed-dim": "#98d0da",
+              "secondary-fixed": "#b3ecf7",
+              "on-error-container": "#ffdad6",
+              "on-secondary-container": "#8ac1cc",
+              "primary-fixed-dim": "#00daf3",
+              "on-error": "#690005",
+              "tertiary": "#ffeac0",
+              "surface-variant": "#31353c",
+              "primary-fixed": "#9cf0ff",
+              "inverse-surface": "#dfe2eb",
+              "on-tertiary-container": "#6f5500",
+              "surface-dim": "#10141a",
+              "on-secondary-fixed": "#001f24",
+              "on-background": "#dfe2eb",
+              "tertiary-container": "#fec931",
+              "surface-container-lowest": "#0a0e14",
+              "surface-bright": "#353940",
+              "secondary-container": "#11505a",
+              "on-tertiary-fixed": "#251a00",
+              "outline": "#849396",
+              "inverse-primary": "#006875",
+              "surface-container": "#1c2026",
+              "surface-container-high": "#262a31",
+              "on-tertiary-fixed-variant": "#594400",
+              "surface-container-highest": "#31353c",
+              "on-primary-fixed-variant": "#004f58",
+              "surface": "#10141a",
+              "error-container": "#93000a",
+              "error": "#ffb4ab",
+              "on-secondary-fixed-variant": "#0d4e57",
+              "primary": "#c3f5ff",
+              "tertiary-fixed": "#ffdf96",
+              "inverse-on-surface": "#2d3137",
+              "primary-container": "#00e5ff",
+              "outline-variant": "#3b494c",
+              "on-primary-fixed": "#001f24",
+              "on-primary": "#00363d"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(16, 20, 26, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .poster-gradient {
+            background: linear-gradient(to top, rgba(10, 14, 20, 0.95) 0%, rgba(10, 14, 20, 0) 50%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar Shell -->
+<aside class="fixed inset-y-0 left-0 flex flex-col w-64 z-40 bg-[#1c2026] dark:bg-slate-900 shadow-2xl shadow-black/20">
+<div class="p-8 flex flex-col gap-1">
+<span class="font-manrope font-black text-2xl tracking-tighter text-[#00E5FF]">HoySeVe</span>
+<span class="font-inter text-xs tracking-wider uppercase text-slate-400">Cinematic Curator</span>
+</div>
+<nav class="flex-1 px-4 space-y-1 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300 hover:bg-[#262a31]/50 hover:text-[#00E5FF]" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-inter text-xs tracking-wider uppercase">Discover</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300 hover:bg-[#262a31]/50 hover:text-[#00E5FF]" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-inter text-xs tracking-wider uppercase">Top Charts</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300 hover:bg-[#262a31]/50 hover:text-[#00E5FF]" href="#">
+<span class="material-symbols-outlined" data-icon="animation">animation</span>
+<span class="font-inter text-xs tracking-wider uppercase">Anime</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300 hover:bg-[#262a31]/50 hover:text-[#00E5FF]" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+<span class="font-inter text-xs tracking-wider uppercase">Movies</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300 hover:bg-[#262a31]/50 hover:text-[#00E5FF]" href="#">
+<span class="material-symbols-outlined" data-icon="tv">tv</span>
+<span class="font-inter text-xs tracking-wider uppercase">TV Series</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300 hover:bg-[#262a31]/50 hover:text-[#00E5FF]" href="#">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-inter text-xs tracking-wider uppercase">Sci-Fi</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00E5FF] bg-[#262a31] rounded-r-full border-l-4 border-[#00E5FF] font-bold active:scale-[0.98] transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="bookmarks" style="font-variation-settings: 'FILL' 1;">bookmarks</span>
+<span class="font-inter text-xs tracking-wider uppercase">My Watchlist</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl text-sm transition-opacity hover:opacity-90">
+                Upgrade to Premium
+            </button>
+<div class="mt-6 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-inter text-xs tracking-wider uppercase">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:text-slate-100 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-inter text-xs tracking-wider uppercase">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 left-64 h-20 flex justify-between items-center px-8 z-30 bg-[#10141a]/80 backdrop-blur-xl">
+<div class="flex items-center gap-8">
+<nav class="flex items-center gap-6">
+<a class="text-slate-300 hover:text-[#00E5FF] font-inter text-sm font-semibold transition-opacity hover:opacity-80" href="#">Movies</a>
+<a class="text-slate-300 hover:text-[#00E5FF] font-inter text-sm font-semibold transition-opacity hover:opacity-80" href="#">Series</a>
+<a class="text-slate-300 hover:text-[#00E5FF] font-inter text-sm font-semibold transition-opacity hover:opacity-80" href="#">Actors</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<input class="bg-surface-container-lowest border-0 rounded-xl px-4 py-2 w-64 text-sm focus:ring-1 focus:ring-primary-container transition-all text-on-surface placeholder:text-slate-500" placeholder="Search curated library..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-500 text-lg">search</span>
+</div>
+<button class="p-2 text-slate-400 hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container border border-outline-variant/20 cursor-pointer">
+<img alt="User profile portrait" class="w-full h-full object-cover" data-alt="Close up portrait of a stylish young man with warm cinematic lighting and a dark atmospheric background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBe6K9_g_opLykr2NsssAj6FQoI_qbtwVSXK_mOgrHqMyVnXhqJ62JmRRGvQUR-MmDJReRmfXZyMeP6GsK0GMGquOLFY7V0eREp8GjjYa2DOvTdQfJpPYq5zZWf0iGEBO9NuYv6ZwWWdTto_L3pl5rYY7nHO9g2xWCEl5O75BD0269r8Ek9pmkdH6j2Udn31JZqsNhB1maXu7TVLH-51zNLMXo-GAER6v4hTfeFFPY_U7WG0MK1fMBdLexy1WD6M2Gp4M3S_Z4JzGlr"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pl-64 pt-20 min-h-screen bg-surface">
+<div class="max-w-7xl mx-auto p-12">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-12">
+<div>
+<h1 class="font-headline font-extrabold text-5xl tracking-tighter text-on-surface mb-2">MI WATCHLIST</h1>
+<p class="text-slate-400 font-medium">Your curated cinematic journey, synchronized across all devices.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl active:scale-95 transition-all shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined">add</span>
+<span>ADD TITLE</span>
+</button>
+</div>
+<!-- Filters & Sorting Row -->
+<div class="bg-surface-container-low rounded-xl p-6 mb-12 flex flex-wrap items-center justify-between gap-6">
+<div class="flex items-center gap-8">
+<div class="flex border-b border-outline-variant/10">
+<button class="px-6 py-3 text-[#00E5FF] border-b-2 border-[#00E5FF] font-semibold text-sm transition-all">Movies</button>
+<button class="px-6 py-3 text-slate-400 hover:text-on-surface font-semibold text-sm transition-all">Anime</button>
+</div>
+<div class="h-8 w-px bg-outline-variant/20"></div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest text-on-surface border-0 rounded-xl px-4 py-2 pr-10 text-xs font-semibold uppercase tracking-wider focus:ring-1 focus:ring-primary-container">
+<option>Sort by: Date Added</option>
+<option>Sort by: Release Date</option>
+<option>Sort by: Rating</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-500 pointer-events-none">expand_more</span>
+</div>
+<div class="relative">
+<select class="appearance-none bg-surface-container-lowest text-on-surface border-0 rounded-xl px-4 py-2 pr-10 text-xs font-semibold uppercase tracking-wider focus:ring-1 focus:ring-primary-container">
+<option>Genre: All</option>
+<option>Sci-Fi</option>
+<option>Cyberpunk</option>
+<option>Drama</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-2 text-slate-500 pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 text-slate-500 text-xs font-medium">
+<span class="material-symbols-outlined text-sm">info</span>
+<span>14 titles saved</span>
+</div>
+</div>
+<!-- Watchlist Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
+<!-- Poster Item 1 -->
+<div class="group relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-container shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-primary-container/10">
+<img alt="Cyberpunk city poster" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Neon-drenched futuristic city at night with towering skyscrapers and flying vehicles in a high-contrast cinematic style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDB-xh-ctUh_UUuHODilxknwWeTf7xwJ5THBLtFkYZZKJYt-O2tlZfuLGsR2KfWOYozlkRDSYnXQCwBc2f4Ui3YagKpXUKJyTptmPpSF1tMg5pTw4Og511nJAugLKPwK4-XBAsl98PLuIuhTzjXuwuYnorw3v84ws31JLCd-GN1RPgzCZ7Nb13TispoInxY7RqerkJA1w0u6M1GOJOhyr5K18hRczCcOp64qs4iqmA4E4Klfq8X2joDt9OZDGpaWh7Ts4GuJEcZIxl_"/>
+<div class="poster-gradient absolute inset-0 flex flex-col justify-end p-5">
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-highest/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-primary tracking-widest uppercase">4K HDR</span>
+</div>
+<div class="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md text-[10px] font-bold shadow-lg">Added 5 days ago</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-white leading-tight mb-1">NEON GENESIS</h3>
+<p class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span> 8.9</span>
+<span>•</span>
+<span>Anime</span>
+</p>
+<!-- Hover Controls -->
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-primary-container hover:text-on-primary-container py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">check</span>
+</button>
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-error-container hover:text-white py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Poster Item 2 -->
+<div class="group relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-container shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-primary-container/10">
+<img alt="Dark sci-fi landscape" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Dramatic silhouette of a lonely explorer on a barren alien planet under a massive ringed planet with atmospheric mist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWO-htHNpqEeX_6JWIHiPvQQzLDqoE44NJSDwVV0ZlNh5UAW_iXktjkX-ND1H7wxM9ri9m7XDhSAf86oJU7lSYd0INa5O1GcOTTTQ1uLpYcndpnkLs331--ZjBdmaum7BO8gA7gIZuq6AY7hmbq1Z1gmEPd_UgF7PlVGq4YYWtLg8bmkBUjd4YAA7ZkDq24f69wOmji9nQBM8m-cvQWITZsiwWjsTfd8uqmeBPsdefBcNmGZtiU_hpgo77zQu-CVzw2lZ29On2bsGG"/>
+<div class="poster-gradient absolute inset-0 flex flex-col justify-end p-5">
+<div class="absolute top-3 left-3 flex gap-2">
+<span class="bg-surface-container-highest/90 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-primary tracking-widest uppercase">HD</span>
+</div>
+<div class="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md text-[10px] font-bold shadow-lg">Added 12 hours ago</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-white leading-tight mb-1">STLLAR DRIFT</h3>
+<p class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span> 9.2</span>
+<span>•</span>
+<span>Movie</span>
+</p>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-primary-container hover:text-on-primary-container py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">check</span>
+</button>
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-error-container hover:text-white py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Poster Item 3 -->
+<div class="group relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-container shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-primary-container/10">
+<img alt="Abstract cinematic art" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Minimalist abstract film poster with deep blue and orange color fields, geometric shapes and film grain texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVDH4-oY3g2byYilVxcMTK80cEfFmfkSZRpSlfFmojdLC7LeV-8yM8Lk8Ha1SWJfbq_T7hW2F05_aWPl9XTB--YalOWisrfF2Tnc_vUOycTO-6DNNM7_oatiHPp0VIwkoOTtc8-WQ5t55fdwEd1hnRNDMKOO1krIOsp01bmljLZ6G6sWTF5IBbIFUW1cYpSf3sGDch_xNFDX87ZGi9eG8qCnUJ35pfiRtjqch5cAQnI8kL5_i-UoVOGt1lwWlrMSpUQP0_NaCDlOvo"/>
+<div class="poster-gradient absolute inset-0 flex flex-col justify-end p-5">
+<div class="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md text-[10px] font-bold shadow-lg">Added 2 weeks ago</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-white leading-tight mb-1">VOID THEORY</h3>
+<p class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span> 7.5</span>
+<span>•</span>
+<span>Sci-Fi</span>
+</p>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-primary-container hover:text-on-primary-container py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">check</span>
+</button>
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-error-container hover:text-white py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Poster Item 4 -->
+<div class="group relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-container shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-primary-container/10">
+<img alt="Cyberpunk samurai" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Digital painting of a futuristic samurai standing in the rain, glowing neon katana, urban backdrop with cinematic depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKfL89sXJ_a5H23XBX6X0vx-2k8iPhqnrO6Nd6cQ20IRgChgjhDtoWOlAzfmjndXZfR_hxNk7g_vCwTl0tIwpifzyOWAmB5QEAt_HwHsumnV-h1knI0J4qECzqxMKzQpYBYgvRO8PsK9r4tGBKsSFMiWGwuxeeafvwedZYkpvkXx3YJa0wNx2R9bv4SJTjFbC2-ORxRmKET4wM9-Lt7LcxR8CqSZ-LNg9bhhJnzQyC5fY7DF_jcltlTRLTxo0Q_EHeWEwplzFgHgHP"/>
+<div class="poster-gradient absolute inset-0 flex flex-col justify-end p-5">
+<div class="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md text-[10px] font-bold shadow-lg">Added 3 days ago</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-white leading-tight mb-1">KATANA 2099</h3>
+<p class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span> 8.4</span>
+<span>•</span>
+<span>Anime</span>
+</p>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-primary-container hover:text-on-primary-container py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">check</span>
+</button>
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-error-container hover:text-white py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Poster Item 5 -->
+<div class="group relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-container shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-primary-container/10">
+<img alt="Dark film noir" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Atmospheric black and white cinematic shot of a dark street corner with a single glowing street lamp and heavy fog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVJtP8wLCBexvv6iIf-bhbr3lmraqY58xsocg43V0BIGh1erCfUESBPRkSxVBJ04GFvMLS7je4xrJT_yYdpM35kdvv-YwjUBKGd_4Ag0THC-u8laguQT-YbcySNPS2Qs_ABrTIjCkDwRTkzZyU7EOgvIz1Co-gY9dEfCq8ltzlpas0tVayGRChu09Edz0Rido08cR8Z4gbEEnpE18WtCvLXyYk64I7q5x4Cu4FxGfOqAord1oQG3QUeggofvl_UdXXst9hpYq_HDYJ"/>
+<div class="poster-gradient absolute inset-0 flex flex-col justify-end p-5">
+<div class="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md text-[10px] font-bold shadow-lg">Added 1 month ago</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-white leading-tight mb-1">SHADOW PROTOCOL</h3>
+<p class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span> 8.1</span>
+<span>•</span>
+<span>Movie</span>
+</p>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-primary-container hover:text-on-primary-container py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">check</span>
+</button>
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-error-container hover:text-white py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Poster Item 6 -->
+<div class="group relative aspect-[2/3] rounded-xl overflow-hidden bg-surface-container shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-primary-container/10">
+<img alt="Surreal dreamscape" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" data-alt="Ethereal landscape with floating islands and purple skies, soft dreamlike lighting with cinematic bokeh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAkVlbP9TjoQ9a86GeZJvP44GfxEoz6223j0-SEJLXgWgJ-zP6RG8tRNBp_AkUHcDRP6Gbcv0W1SHY1mIeq8Yqi_AbS0wPxnoPY2Fxdnzn02ZxaGceh57msXU832yn4rNOkqmPcFN2Tm7YKq2Xep7-oOWF3qp8BnMIFl8UQipy-EOPCdIqJ6kgZ92S5OWbTvgexfpFPkKkwh08gqkbYoS4ntUjb4LCazzjga-Df-3ZlKCoPLlL-7WzyvQFGTNPVGPLe-KInDGaWD8H"/>
+<div class="poster-gradient absolute inset-0 flex flex-col justify-end p-5">
+<div class="absolute top-3 right-3 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md text-[10px] font-bold shadow-lg">Added 2 days ago</span>
+</div>
+<h3 class="font-headline font-bold text-lg text-white leading-tight mb-1">ETHERIA</h3>
+<p class="text-xs text-slate-400 font-medium flex items-center gap-2 mb-4">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-xs text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">star</span> 7.9</span>
+<span>•</span>
+<span>Anime</span>
+</p>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-primary-container hover:text-on-primary-container py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">check</span>
+</button>
+<button class="flex-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/20 hover:bg-error-container hover:text-white py-2 rounded-lg flex justify-center transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty State / Add Card -->
+<div class="aspect-[2/3] rounded-xl border-2 border-dashed border-outline-variant/30 flex flex-col items-center justify-center text-slate-500 hover:border-primary-container/50 hover:text-primary-container transition-all cursor-pointer group">
+<span class="material-symbols-outlined text-4xl mb-2 group-hover:scale-110 transition-transform">add_circle</span>
+<span class="font-bold text-xs tracking-widest uppercase">Add New Title</span>
+</div>
+</div>
+<!-- Bento Stats Section -->
+<div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="md:col-span-2 bg-surface-container-low rounded-xl p-8 flex flex-col justify-between min-h-[240px]">
+<div>
+<span class="text-xs font-bold text-primary tracking-widest uppercase mb-4 block">Viewing Insights</span>
+<h4 class="font-headline font-bold text-3xl text-on-surface mb-2">You're on a roll.</h4>
+<p class="text-slate-400 max-w-md">You've watched 4 movies from your watchlist this week. At this rate, you'll clear your current queue by next month.</p>
+</div>
+<div class="flex items-center gap-4 mt-8">
+<div class="flex -space-x-3">
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container">
+<img class="w-full h-full object-cover rounded-full" data-alt="Small thumbnail of a cyberpunk movie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoWO1UsnB7McSMhIVga_jCokxx2l3zTJHPPHTgYdp2UvoZ--0paNvnKBqrUGtUdH5nmFjOgkTohegWUrbIMkaPRuAkjG62e63kwPJfRzHUls4wvJyU5h7pmPAhUvttLVjyl-AyYEqONNA0zq7zmzQlnyw6WEtZrApkD0zsH6I9otcwwQ6bXhct2qUFPWsisI1Nx5FnyCkx3YABAS9L3h4hEOr11Sw6qrcHrXpQ96kW_w6O_vvOVGJH8JOcMd-LQmvngpt05YuaUNAi"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container">
+<img class="w-full h-full object-cover rounded-full" data-alt="Small thumbnail of a sci-fi movie" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoQhkastR8VMAp_rEcqU-Ex2mhhQHJJHZy3a0P1ygImi4l2HTIoY4kHpuJfK-pBH5dr1rE9Lpg7Mrixv06mOP9s65PYzpVagMud97ZtB6_-jo80A3YmrCRa5o2KEgh3A7-sihNMS3M-buwPTZNlt9EHfBYbLVYodK4TlmkKHA9w7MPJy34W1ZMuczTNoZ-U7wwTFMtMUeSMvI-BjUagS9J0u8tMVvOg-aNuIpSyMCOmZ1hCyzb7wajMptOPNUWFENdKKioeRCAGedW"/>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-surface bg-surface-container-high flex items-center justify-center text-[10px] font-bold">+2</div>
+</div>
+<span class="text-xs font-medium text-slate-500">Recently completed</span>
+</div>
+</div>
+<div class="bg-gradient-to-br from-[#1c2026] to-[#0a0e14] rounded-xl p-8 flex flex-col items-center justify-center text-center border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary-container text-5xl mb-4" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h4 class="font-headline font-bold text-xl text-on-surface mb-2">AI Curator</h4>
+<p class="text-sm text-slate-400 mb-6">Let HoySeVe analyze your watchlist to suggest your next favorite film.</p>
+<button class="w-full py-3 border border-primary-container text-primary-container text-xs font-bold tracking-widest uppercase rounded-xl hover:bg-primary-container/10 transition-colors">Generate Picks</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

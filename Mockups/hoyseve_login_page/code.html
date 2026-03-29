@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-surface-variant": "#bac9cc",
+              "on-secondary": "#00363d",
+              "surface-container-low": "#181c22",
+              "secondary-fixed-dim": "#98d0da",
+              "secondary-fixed": "#b3ecf7",
+              "on-primary-container": "#00626e",
+              "on-tertiary": "#3e2e00",
+              "tertiary-fixed-dim": "#f3bf26",
+              "surface-tint": "#00daf3",
+              "secondary": "#98d0da",
+              "on-surface": "#dfe2eb",
+              "background": "#10141a",
+              "primary-fixed": "#9cf0ff",
+              "surface-variant": "#31353c",
+              "tertiary": "#ffeac0",
+              "on-tertiary-container": "#6f5500",
+              "inverse-surface": "#dfe2eb",
+              "primary-fixed-dim": "#00daf3",
+              "on-error": "#690005",
+              "on-secondary-container": "#8ac1cc",
+              "on-error-container": "#ffdad6",
+              "outline": "#849396",
+              "inverse-primary": "#006875",
+              "on-tertiary-fixed": "#251a00",
+              "surface-container": "#1c2026",
+              "on-secondary-fixed": "#001f24",
+              "surface-dim": "#10141a",
+              "secondary-container": "#11505a",
+              "surface-bright": "#353940",
+              "tertiary-container": "#fec931",
+              "surface-container-lowest": "#0a0e14",
+              "on-background": "#dfe2eb",
+              "tertiary-fixed": "#ffdf96",
+              "inverse-on-surface": "#2d3137",
+              "primary": "#c3f5ff",
+              "on-secondary-fixed-variant": "#0d4e57",
+              "on-primary": "#00363d",
+              "primary-container": "#00e5ff",
+              "outline-variant": "#3b494c",
+              "on-primary-fixed": "#001f24",
+              "error-container": "#93000a",
+              "error": "#ffb4ab",
+              "surface": "#10141a",
+              "surface-container-highest": "#31353c",
+              "on-primary-fixed-variant": "#004f58",
+              "surface-container-high": "#262a31",
+              "on-tertiary-fixed-variant": "#594400"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #c3f5ff 0%, #00e5ff 100%);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body min-h-screen flex flex-col relative overflow-hidden">
+<!-- Ambient Background Texture -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-20">
+<div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-primary-container/20 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-secondary-container/20 blur-[100px]"></div>
+</div>
+<!-- Navigation Shell (Suppressed items as per task, but keeping identity) -->
+<header class="fixed top-0 w-full z-50 bg-[#10141a]/80 backdrop-blur-xl flex justify-between items-center px-6 h-16 w-full">
+<div class="text-2xl font-black text-[#00e5ff] tracking-tighter font-headline">HoySeVe</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#74777f] hover:text-[#00e5ff] transition-colors cursor-pointer" data-icon="help_outline">help_outline</span>
+</div>
+</header>
+<main class="flex-grow flex items-center justify-center px-4 pt-16 relative z-10">
+<!-- Login Panel -->
+<div class="w-full max-w-[440px] bg-surface-container rounded-xl shadow-[0_40px_6%_rgba(0,229,255,0.03)] overflow-hidden border border-outline-variant/15">
+<!-- Segmented Tabs -->
+<div class="flex border-b border-outline-variant/10">
+<button class="flex-1 py-5 text-center relative group">
+<span class="text-sm font-bold font-headline tracking-widest text-primary-container">LOG IN</span>
+<div class="absolute bottom-0 left-0 w-full h-[3px] bg-primary-container shadow-[0_-4px_12px_rgba(0,229,255,0.4)]"></div>
+</button>
+<button class="flex-1 py-5 text-center group hover:bg-surface-container-high transition-colors">
+<span class="text-sm font-bold font-headline tracking-widest text-on-surface-variant group-hover:text-on-surface">REGISTER</span>
+</button>
+</div>
+<!-- Form Area -->
+<div class="p-8 md:p-10">
+<form class="space-y-6">
+<!-- Identity Input -->
+<div class="space-y-2">
+<label class="block text-[10px] font-bold tracking-[0.15em] text-on-surface-variant uppercase font-label">User / Email</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-5 py-4 text-on-surface placeholder:text-outline/40 focus:ring-1 focus:ring-primary-container/50 focus:bg-surface-container-high transition-all outline-none" placeholder="sarahk123" type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/30 group-focus-within:text-primary-container transition-colors" data-icon="alternate_email">alternate_email</span>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<label class="block text-[10px] font-bold tracking-[0.15em] text-on-surface-variant uppercase font-label">Password</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-lowest border-none rounded-xl px-5 py-4 text-on-surface placeholder:text-outline/40 focus:ring-1 focus:ring-primary-container/50 focus:bg-surface-container-high transition-all outline-none" placeholder="••••••••" type="password"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline/30 group-focus-within:text-primary-container transition-colors" data-icon="lock">lock</span>
+</div>
+</div>
+<!-- Sub-links -->
+<div class="flex justify-between items-center pt-1">
+<a class="text-[11px] font-semibold text-primary/70 hover:text-primary-container transition-colors font-label" href="#">Forgot Password?</a>
+<a class="text-[11px] font-semibold text-primary/70 hover:text-primary-container transition-colors font-label" href="#">Sign Up</a>
+</div>
+<!-- Primary Action -->
+<button class="w-full primary-gradient text-on-primary py-4 rounded-xl font-bold tracking-widest text-sm uppercase shadow-lg shadow-primary-container/10 active:scale-[0.98] transition-all font-headline mt-4" type="submit">
+                        SIGN IN
+                    </button>
+</form>
+<!-- Footer Link -->
+<div class="mt-10 text-center">
+<p class="text-xs text-on-surface-variant font-medium">
+                        New to HoySeVe? 
+                        <a class="text-primary-container hover:underline ml-1 font-bold" href="#">Create an Account</a>
+</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Visual Anchor / Editorial Element -->
+<div class="hidden lg:block absolute bottom-12 right-12 max-w-sm pointer-events-none opacity-40">
+<div class="relative overflow-hidden rounded-xl bg-surface-container-high p-4 border border-outline-variant/10">
+<img class="w-full h-48 object-cover rounded-md mb-4 opacity-80 mix-blend-screen" data-alt="dramatic cinematic film still showing a dimly lit theater with blue neon lighting and atmospheric haze" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQ5JT7cYphXUvp1r0rNKxKhMn0YCVI9JGrisPN2kce98fgcw63xkm3awvdXM44dAutQf-2NNBMTuMfEYsSS-CfclQridItQwF1fqAHVxIm9aBlm9whBCBpsvcwCmjdt9aLUxvPgUCh-Kn9tn1h5aHYkQ0PuaMDwqVc9yL2R0KKglhuZk-TKpG5mGqKB36OJdoS_P-B8KG6roEri0nb1WR0rcsM6AWUL68efQsCj3-uYJ1fOwFKWsYusEN2Xr8YjZSuBoPcG8A5Pm20"/>
+<p class="text-[10px] font-bold tracking-widest text-primary-container uppercase font-label">Now Streaming</p>
+<h3 class="font-headline text-lg font-bold text-on-surface">Experience the Unseen.</h3>
+</div>
+</div>
+<!-- Security Badging -->
+<footer class="p-6 text-center z-10">
+<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container-lowest border border-outline-variant/10">
+<span class="material-symbols-outlined text-[14px] text-primary-fixed-dim" data-icon="verified_user">verified_user</span>
+<span class="text-[10px] uppercase tracking-tighter font-bold text-outline">Secure 256-bit Encryption Active</span>
+</div>
+</footer>
+</body></html>

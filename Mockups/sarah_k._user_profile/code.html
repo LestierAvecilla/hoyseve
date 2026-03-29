@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HoySeVe | Sarah K. Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;700;800&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary": "#00363d",
+                        "on-background": "#dfe2eb",
+                        "tertiary": "#ffeac0",
+                        "surface-container-high": "#262a31",
+                        "inverse-surface": "#dfe2eb",
+                        "primary": "#c3f5ff",
+                        "on-secondary": "#00363d",
+                        "surface-dim": "#10141a",
+                        "on-tertiary": "#3e2e00",
+                        "on-tertiary-container": "#6f5500",
+                        "secondary-container": "#11505a",
+                        "tertiary-fixed-dim": "#f3bf26",
+                        "surface-tint": "#00daf3",
+                        "surface-container-lowest": "#0a0e14",
+                        "inverse-on-surface": "#2d3137",
+                        "secondary-fixed": "#b3ecf7",
+                        "error-container": "#93000a",
+                        "on-error": "#690005",
+                        "surface-container-highest": "#31353c",
+                        "secondary": "#98d0da",
+                        "secondary-fixed-dim": "#98d0da",
+                        "on-surface-variant": "#bac9cc",
+                        "inverse-primary": "#006875",
+                        "on-secondary-fixed-variant": "#0d4e57",
+                        "surface": "#10141a",
+                        "on-primary-container": "#00626e",
+                        "surface-bright": "#353940",
+                        "tertiary-container": "#fec931",
+                        "primary-fixed-dim": "#00daf3",
+                        "outline": "#849396",
+                        "outline-variant": "#3b494c",
+                        "on-tertiary-fixed": "#251a00",
+                        "primary-fixed": "#9cf0ff",
+                        "primary-container": "#00e5ff",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#004f58",
+                        "surface-container-low": "#181c22",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#001f24",
+                        "tertiary-fixed": "#ffdf96",
+                        "background": "#10141a",
+                        "on-secondary-container": "#8ac1cc",
+                        "on-secondary-fixed": "#001f24",
+                        "surface-variant": "#31353c",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "surface-container": "#1c2026",
+                        "on-surface": "#dfe2eb"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(28, 32, 38, 0.7);
+            backdrop-filter: blur(20px);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #10141a; }
+        ::-webkit-scrollbar-thumb { background: #262a31; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #31353c; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary-container selection:text-on-primary">
+<!-- SideNavBar Anchor -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-white/5 bg-[#10141a] z-50">
+<div class="flex flex-col h-full p-6 space-y-8">
+<div class="flex flex-col gap-1">
+<span class="text-2xl font-black tracking-tighter text-[#c3f5ff] font-['Manrope']">HoySeVe</span>
+<span class="text-[0.6875rem] font-['Inter'] uppercase tracking-[0.1em] text-on-surface-variant/60">The Cinematic Curator</span>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-[#dfe2eb]/60 hover:text-[#dfe2eb] hover:bg-[#262a31] rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-medium">Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#dfe2eb]/60 hover:text-[#dfe2eb] hover:bg-[#262a31] rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-medium">Discovery</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#dfe2eb]/60 hover:text-[#dfe2eb] hover:bg-[#262a31] rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="bookmarks">bookmarks</span>
+<span class="font-medium">Watchlist</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#dfe2eb]/60 hover:text-[#dfe2eb] hover:bg-[#262a31] rounded-xl transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-medium">Community</span>
+</a>
+<!-- Active Tab: Profile -->
+<a class="flex items-center gap-3 px-4 py-3 text-[#00e5ff] bg-[#1c2026] rounded-xl font-bold transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-medium">Profile</span>
+</a>
+</nav>
+<div class="pt-6 border-t border-white/5">
+<div class="flex items-center gap-3 px-2">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden border border-primary/20">
+<img alt="Sarah K. Profile Avatar" class="w-full h-full object-cover" data-alt="close-up portrait of a smiling young woman with warm lighting and a soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDELZ2NVaMOkaPnKNXhIPqQxiZzD_bp1FNNIFa8z9KG2_6Y9KvxV77BPmxNZpOPM7PfJbiXEYbdXwZGDwehIklsKP9xMMGVEztr01W7qjf2ucYkkaqr3CJ-PfReIEd75ke0YG5LWNSaH8ybQi-twd8uSdLylW2ff-UsXE3LDi9pQiCysNtbvVLuHzxtTX2jVsjvriD6cLzAgPUNDASDx0BWjRBvIMnfH0mLiJmaUO_1MjYpacaowhPFnlfmWtsU52_e9COXgq6TeJTk"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Sarah K.</span>
+<span class="text-[0.65rem] text-on-surface-variant uppercase tracking-wider">Premium Member</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar Anchor -->
+<header class="fixed top-0 right-0 left-64 h-16 z-40 bg-[#10141a]/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-8 h-full w-full">
+<div class="flex items-center gap-4">
+<h1 class="text-lg font-semibold font-headline text-on-surface">Profile Overview</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-sm" data-icon="search">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full py-1.5 pl-10 pr-4 text-[0.6875rem] font-label tracking-widest focus:ring-1 focus:ring-primary-container/50 w-64 placeholder:text-on-surface-variant/40" placeholder="SEARCH FILMS..." type="text"/>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer transition-colors" data-icon="settings">settings</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Profile Hero Section -->
+<section class="pt-16 pb-8 px-8">
+<div class="relative rounded-3xl overflow-hidden bg-surface-container-low p-8 mt-6">
+<!-- Background Glow -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="relative flex flex-col md:flex-row items-end gap-8">
+<!-- Avatar with Overlapping Rating Badge -->
+<div class="relative group">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-3xl overflow-hidden border-2 border-primary/20 shadow-2xl">
+<img alt="Sarah K." class="w-full h-full object-cover" data-alt="portrait of a confident woman with a friendly smile, professional cinematic lighting, dark textured background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDw4oWcdSF7lh0B6XzCjXY1I0R3I88omExWwzu45RqK9ZVWX2PKuXXOEVhAiEDH5dYZH3ul-TR0ZUdoxq-nxgN6bi1Lcnmh_v4Ue90ELfD9uGhHc-G9g-sfAmc1Xk5ZKj3kIW7oRg0oNfrhWpSia9GGYTyONElWvB-UT4lXFGG34oad2Dy8eD90DfmH7wLz7RLz4jjRt1FIOXH_XzF21MuAQJaKqoZ_aDzyLcnnZDHfymEY6vvWhP2SrLT7605tNDtALCJS0UJ1fuNd"/>
+</div>
+<div class="absolute -bottom-3 -right-3 bg-primary-container text-on-primary font-headline font-black px-3 py-1 rounded-lg text-lg shadow-xl">
+                            A+
+                        </div>
+</div>
+<div class="flex-1 space-y-4">
+<div class="space-y-1">
+<div class="flex items-center gap-3">
+<h2 class="text-4xl font-black font-headline tracking-tighter text-on-surface">Sarah K.</h2>
+<span class="material-symbols-outlined text-primary-container text-xl" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="text-on-surface-variant font-medium">@cinematic_sarah • Joined March 2022</p>
+</div>
+<!-- Stats Row -->
+<div class="flex flex-wrap gap-8 pt-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+</div>
+<div>
+<p class="text-xl font-bold font-headline leading-none">151</p>
+<p class="text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant">Ratings</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+</div>
+<div>
+<p class="text-xl font-bold font-headline leading-none">31</p>
+<p class="text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant">Reviews</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</div>
+<div>
+<p class="text-xl font-bold font-headline leading-none">45</p>
+<p class="text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant">Watchlist</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="diversity_3">diversity_3</span>
+</div>
+<div>
+<p class="text-xl font-bold font-headline leading-none">120</p>
+<p class="text-[0.6875rem] font-label uppercase tracking-widest text-on-surface-variant">Followers</p>
+</div>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold rounded-xl text-sm transition-transform active:scale-95 shadow-lg shadow-primary-container/20">Edit Profile</button>
+<button class="px-3 py-2.5 bg-surface-container-high text-on-surface rounded-xl hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Segmented Tab Bar -->
+<section class="px-8 sticky top-16 z-30 bg-background/90 backdrop-blur-md">
+<div class="flex gap-8 border-b border-white/5">
+<button class="pb-4 text-sm font-bold text-primary-container border-b-2 border-primary-container relative">
+                    My Ratings
+                </button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+                    My Reviews
+                </button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+                    Watchlist
+                </button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+                    My Lists
+                </button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
+                    Settings
+                </button>
+</div>
+</section>
+<!-- Ratings Content Grid -->
+<section class="p-8">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+<!-- Movie Card 1 -->
+<div class="group relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-container-low shadow-xl transition-all duration-300 hover:-translate-y-2">
+<img alt="Interstellar" class="w-full h-full object-cover" data-alt="cinematic shot of a spaceship traveling near a glowing wormhole in deep space with vibrant colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHnhn7kjOePVOqub38JKR07r-7U0hmAMr8qhqwF23Fb9Aoga41MgxhBVDnhFsUxvcanh6QBi_H7n7MCYwM-PqCCcqjfYTSKB0b1mYygW5MY04jkjHYYRx2GBYjt6OjZ2hV82v_VwUminc2dNmrVxjSY1U9PQEYlEv8CwTqt_xvX7O7_k0bAUOm8A5Jy6dI9VbZJ21Rijfca1IjllQ3f_lSIWym7lut6Cd9teH6q2VKOx1bV013RxDU6L6K39c9-FUGw5zi4BnsNUZv"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+<p class="font-headline font-bold text-white text-lg leading-tight">Interstellar</p>
+<p class="text-primary-container text-[0.6875rem] font-label uppercase mt-1">Sci-Fi • 2014</p>
+</div>
+<div class="absolute top-3 left-3 glass-panel px-2.5 py-1 rounded-lg border border-white/10 shadow-lg">
+<span class="text-[0.6875rem] font-black font-headline text-primary-container tracking-tight">Sarah 10/10</span>
+</div>
+</div>
+<!-- Movie Card 2 -->
+<div class="group relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-container-low shadow-xl transition-all duration-300 hover:-translate-y-2">
+<img alt="Inception" class="w-full h-full object-cover" data-alt="abstract city folding onto itself with surreal architecture and blue moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgzLI88MZhj115qXRaZmOx4bBiQiM-g0a2qM5lI_ldE3gGn37F8FJYgYJeZ4xK_ksI-8TPRnq0lIMKe7-KOZzTY3ygDrv__DIxzmliZmmdGFiRNIgwOdNoe_i5vUzYUWsiyX0Rz1SHk1JAMG_s1Z7qhgSBPVZ0FddLHOT5D3K8jgDOgmd384QdUFwYuUwhG_SxTgd1b6naVOUUIPWVaYtLSUJqmMIxG7w_QjthKia9ULkubjstiHE6gJTBPD_NBqzZ5B_D7XBbcYg4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+<p class="font-headline font-bold text-white text-lg leading-tight">Inception</p>
+<p class="text-primary-container text-[0.6875rem] font-label uppercase mt-1">Thriller • 2010</p>
+</div>
+<div class="absolute top-3 left-3 glass-panel px-2.5 py-1 rounded-lg border border-white/10 shadow-lg">
+<span class="text-[0.6875rem] font-black font-headline text-primary-container tracking-tight">Sarah 10/10</span>
+</div>
+</div>
+<!-- Movie Card 3 -->
+<div class="group relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-container-low shadow-xl transition-all duration-300 hover:-translate-y-2">
+<img alt="Blade Runner 2049" class="w-full h-full object-cover" data-alt="futuristic neon-lit city street in the rain with glowing signs and heavy atmospheric fog" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmDXCPtbzaZ0QVhELGrlwELz8Uoz-vRJE2rKrrt8UlHL4EwVJ6z2gu8CctZyostYSYze7lpB8UX4WGvVDRKHxiBWIINvnHDunb1NX12URvVLHs00StJgSlGBX5pisPcxFfaMu5X-3w81yvJ4PAmi_UZZ94VBRRmxuCAc6IhKYDw9NjWa6kA-IEd2UNVtrDmMPM68aM5zp4DauFv-NzjawgB4OxuGjNGHZ9Llpj-dXwIS6SMYTLgmJ-z76PwUpxUrPt5ac9tx4cgKvW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+<p class="font-headline font-bold text-white text-lg leading-tight">Blade Runner 2049</p>
+<p class="text-primary-container text-[0.6875rem] font-label uppercase mt-1">Sci-Fi • 2017</p>
+</div>
+<div class="absolute top-3 left-3 glass-panel px-2.5 py-1 rounded-lg border border-white/10 shadow-lg">
+<span class="text-[0.6875rem] font-black font-headline text-primary-container tracking-tight">Sarah 9/10</span>
+</div>
+</div>
+<!-- Movie Card 4 -->
+<div class="group relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-container-low shadow-xl transition-all duration-300 hover:-translate-y-2">
+<img alt="Dune" class="w-full h-full object-cover" data-alt="vast desert landscape with massive sand dunes under a hazy sun and soft orange tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBms9DRiGPWl3_A13y5LaspdlY5dEc1v-2hns-DR96Epwv-ldIeRWRB2gMmBdqrw4vN6HplkGvm1h_8aQGp4eW157aI5MsevaT0RVKpVCgn1vvtflMdb1tZKZDIwF-iWlK4TYGeyNTpslspkQpCcJ8P9_k00VEddBTl6oPGyX0k5UlCdjZjMYV5_wS0jA24DxWOd-MJ0p_b9A5MVpwoxEGQm8ic2AsJJsnT1l3PR3KfMwchcq8jROwuXXc69gOnR67LNSevHF0pMmJz"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+<p class="font-headline font-bold text-white text-lg leading-tight">Dune</p>
+<p class="text-primary-container text-[0.6875rem] font-label uppercase mt-1">Adventure • 2021</p>
+</div>
+<div class="absolute top-3 left-3 glass-panel px-2.5 py-1 rounded-lg border border-white/10 shadow-lg">
+<span class="text-[0.6875rem] font-black font-headline text-primary-container tracking-tight">Sarah 10/10</span>
+</div>
+</div>
+<!-- Movie Card 5 -->
+<div class="group relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-container-low shadow-xl transition-all duration-300 hover:-translate-y-2">
+<img alt="The Matrix" class="w-full h-full object-cover" data-alt="digital green rain falling on a dark screen representing computer code and matrix aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBud9Oam0dSNk5T28e0CM7eFdA-3ZUOV6VsXtEMKUtA4VkrBHfuTw3AH4uJLqEnvxtONdCl5sTLOXHWw-Pym8GAYT2l_SeZmiTtzIrVkZVCmujmAszWxkaZYOUbMRGYFSlFcwENmlkYUw4VlhdK8SCxqjumN7TnM1DxrlWEb-vsipalAzA5rzSqnd0HFropAahZOjcdp7ir1bSI_Q-aue4Zz_jovegIVBB7uWCj_UL6oSfQ36XBl8ix2ipCcqqyVHJ_jU-mbGJhj82l"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+<p class="font-headline font-bold text-white text-lg leading-tight">The Matrix</p>
+<p class="text-primary-container text-[0.6875rem] font-label uppercase mt-1">Action • 1999</p>
+</div>
+<div class="absolute top-3 left-3 glass-panel px-2.5 py-1 rounded-lg border border-white/10 shadow-lg">
+<span class="text-[0.6875rem] font-black font-headline text-primary-container tracking-tight">Sarah 10/10</span>
+</div>
+</div>
+<!-- Movie Card 6 -->
+<div class="group relative aspect-[2/3] rounded-2xl overflow-hidden bg-surface-container-low shadow-xl transition-all duration-300 hover:-translate-y-2">
+<img alt="Arrival" class="w-full h-full object-cover" data-alt="monolithic alien spacecraft hovering over a misty mountain valley at twilight with moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLr3LBJn9jlvYRv5IsbBd71a1HxhUWHr6owcE3lUgjQYuqKAOIWvLSja1oGrx0bApusHR0yXu5Z965N1i-QxKVRale-ZzRR8t4tWj61ZWyj5X4jh0go6FajFYYctkOYR4Y-AntDucnWtVxjQ7_-EiDAot9F_DFC5nxzzENi-DwnCirZ8qptl0iSLUmKQbzcU939HcUBZWLbhhnUHh8njf1Xvje5eHvZHUUtJxQQlXQCVcO54Sfq2Wmt7OW9KSO1Lc_m-iKE6wIho5y"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+<p class="font-headline font-bold text-white text-lg leading-tight">Arrival</p>
+<p class="text-primary-container text-[0.6875rem] font-label uppercase mt-1">Sci-Fi • 2016</p>
+</div>
+<div class="absolute top-3 left-3 glass-panel px-2.5 py-1 rounded-lg border border-white/10 shadow-lg">
+<span class="text-[0.6875rem] font-black font-headline text-primary-container tracking-tight">Sarah 9/10</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Lower Section: About & Activity -->
+<section class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- About Me Box -->
+<div class="lg:col-span-1 space-y-4">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-container" data-icon="person_outline">person_outline</span>
+<h3 class="text-lg font-bold font-headline">About Me</h3>
+</div>
+<div class="bg-surface-container p-6 rounded-2xl border border-white/5">
+<p class="text-sm leading-relaxed text-on-surface-variant">
+                        Film historian in the making. I have a profound obsession with 70mm cinematography and original synth scores. If it involves space exploration, neon lighting, or existential dread, it's probably in my top 10.
+                    </p>
+<div class="mt-6 flex flex-wrap gap-2">
+<span class="px-3 py-1 bg-surface-container-high rounded-lg text-[0.65rem] font-label uppercase tracking-wider text-primary">Sci-Fi Enthusiast</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-lg text-[0.65rem] font-label uppercase tracking-wider text-primary">A24 Stan</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-lg text-[0.65rem] font-label uppercase tracking-wider text-primary">IMAX Only</span>
+</div>
+</div>
+</div>
+<!-- Recent Activity Timeline -->
+<div class="lg:col-span-2 space-y-4">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-container" data-icon="history">history</span>
+<h3 class="text-lg font-bold font-headline">Recent Activity</h3>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container transition-colors group">
+<div class="w-12 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Inception" class="w-full h-full object-cover" data-alt="abstract city folding onto itself blue moody lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBE3OBuCqp9o_QKZFLM9Rq6udxnTUB8f5tG5Bd-P32moOHh6p9O_Zk5T99tr3M9dSKOvBYBUQb1G02q5sGKf7cUYnZv6HM3foK5XdaJBgIO7g0TSHPIrMrzShn1r__KuAY7cfsGm3EUbFJL9xQ1HtCx_dzSOeaJmmYoUXTGIbySr3WtllsTfy9aGbtifI4-kzKS9P_EkWHIMgFLmYHRUGGQ2iFG2fyf-rxo_gHU7WY61ffblahnl93t6UuRqXhN0XfVhOe_6_Txx_bu"/>
+</div>
+<div class="flex-1">
+<p class="text-sm">
+<span class="font-bold text-on-surface">Sarah K.</span>
+<span class="text-on-surface-variant">rated</span>
+<span class="font-bold text-primary-container">Inception</span>
+</p>
+<div class="flex items-center gap-2 mt-1">
+<div class="flex gap-0.5 text-primary-container">
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-xs" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-[0.65rem] text-on-surface-variant uppercase tracking-tighter">2 hours ago</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container transition-colors group">
+<div class="w-12 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img alt="Interstellar" class="w-full h-full object-cover" data-alt="cinematic spaceship in deep space near wormhole" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8N7WuvG-qn11aN4GalomALhr4AX8bGKvvRMKAKeh3leaaHRCW4D9TuV2_SrrmWh1CB30IrOqVd3ak1broDS-y1qjQnV_U_18Zvxa_K2Ca5cRujucKeIVh8xFhR2niAUuvyxlc5OkJCvmE_mdLklKLuXPbCJ3Jh0HM2cIPD0NLVAZTb9_zop7iqQo-D34dexcdii-J8PG0BjRmlb444QGOcVSu1MSKKKMfwA0hscCjV3tklm5jsLzqvVW4vZPMiY0DTfXmT-MI2dCa"/>
+</div>
+<div class="flex-1">
+<p class="text-sm">
+<span class="font-bold text-on-surface">Sarah K.</span>
+<span class="text-on-surface-variant">added</span>
+<span class="font-bold text-primary-container">Interstellar</span>
+<span class="text-on-surface-variant">to her list "Must Rewatch"</span>
+</p>
+<span class="text-[0.65rem] text-on-surface-variant uppercase tracking-tighter mt-1 block">Yesterday</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- FAB Suppression Rule: Suppressed on Profile screen -->
+</body></html>

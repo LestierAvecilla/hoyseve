@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HoySeVe - The Midnight Sky</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-variant": "#31353c",
+                        "on-primary-container": "#00626e",
+                        "on-surface": "#dfe2eb",
+                        "on-secondary-fixed": "#001f24",
+                        "on-tertiary-container": "#6f5500",
+                        "on-tertiary-fixed": "#251a00",
+                        "surface-container-low": "#181c22",
+                        "background": "#10141a",
+                        "surface": "#10141a",
+                        "inverse-surface": "#dfe2eb",
+                        "tertiary-fixed-dim": "#f3bf26",
+                        "surface-dim": "#10141a",
+                        "on-secondary": "#00363d",
+                        "on-error": "#690005",
+                        "surface-bright": "#353940",
+                        "inverse-primary": "#006875",
+                        "primary-container": "#00e5ff",
+                        "on-secondary-container": "#8ac1cc",
+                        "surface-container-high": "#262a31",
+                        "on-surface-variant": "#bac9cc",
+                        "on-primary-fixed": "#001f24",
+                        "outline": "#849396",
+                        "on-secondary-fixed-variant": "#0d4e57",
+                        "surface-container": "#1c2026",
+                        "primary": "#c3f5ff",
+                        "surface-container-lowest": "#0a0e14",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "surface-tint": "#00daf3",
+                        "outline-variant": "#3b494c",
+                        "primary-fixed-dim": "#00daf3",
+                        "secondary-container": "#11505a",
+                        "on-tertiary": "#3e2e00",
+                        "on-background": "#dfe2eb",
+                        "secondary": "#98d0da",
+                        "tertiary-container": "#fec931",
+                        "secondary-fixed": "#b3ecf7",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed": "#9cf0ff",
+                        "on-primary": "#00363d",
+                        "surface-container-highest": "#31353c",
+                        "tertiary": "#ffeac0",
+                        "error-container": "#93000a",
+                        "secondary-fixed-dim": "#98d0da",
+                        "on-primary-fixed-variant": "#004f58",
+                        "tertiary-fixed": "#ffdf96",
+                        "inverse-on-surface": "#2d3137",
+                        "error": "#ffb4ab"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Authority: JSON & Design System) -->
+<aside class="fixed left-0 top-0 h-full w-70 bg-slate-950 flex flex-col py-8 px-6 border-r border-slate-800/15 z-40">
+<div class="mb-8">
+<h1 class="text-2xl font-black text-cyan-400 font-headline tracking-tight">HoySeVe</h1>
+<p class="font-manrope uppercase tracking-wider text-[11px] font-bold text-slate-500">Cinematic Curator</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 hover:text-slate-300 hover:bg-slate-900 group" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">Top Charts</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 hover:text-slate-300 hover:bg-slate-900 group" href="#">
+<span class="material-symbols-outlined" data-icon="animation">animation</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">Anime</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-cyan-400 border-r-2 border-cyan-400 bg-cyan-400/5 group translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">Movies</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 hover:text-slate-300 hover:bg-slate-900 group" href="#">
+<span class="material-symbols-outlined" data-icon="tv">tv</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">TV Series</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 hover:text-slate-300 hover:bg-slate-900 group" href="#">
+<span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">Sci-Fi</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 hover:text-slate-300 hover:bg-slate-900 group" href="#">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">Discover</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-200 text-slate-500 hover:text-slate-300 hover:bg-slate-900 group" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-manrope uppercase tracking-wider text-[11px] font-bold">My Watchlist</span>
+</a>
+</nav>
+<div class="mt-auto pt-8">
+<button class="w-full py-4 bg-slate-900 hover:bg-slate-800 text-cyan-400 font-headline font-bold text-xs uppercase tracking-widest rounded-xl transition-all active:scale-95">
+                Register / Login
+            </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-70 min-h-screen bg-surface relative overflow-x-hidden">
+<!-- Hero Background Blur -->
+<div class="absolute top-0 left-0 w-full h-[614px] opacity-20 pointer-events-none">
+<div class="absolute inset-0 bg-gradient-to-b from-transparent to-surface z-10"></div>
+<img class="w-full h-full object-cover" data-alt="dramatic cinematic wide shot of a futuristic observatory in a snowy arctic landscape under a dark starry sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMmebr7syAjWwMu5atX5HiBtpJ-UVkbeya6ZsYzJ8HdW73VAsNbhq7d7kZFT273kSDFYL3SW0goEeiw1i9U_5f2i1B1ZruYdEOHU5TqNs2isbRocXUdWuHImV5s1Aiz5vt2v7F-3rb-JIBo7ojM3nuv0cIOydrQ1Djueypo8_SgAEpEELhxEW4U-G69pXk1Uozmju4XBdEpfSmV_P_fFkvGCtCwNnwpGLgLcl6WJehlL58b9wgNmSU7nKWRVmPp8p2dQ6KlKNRxdof"/>
+</div>
+<!-- Content Container -->
+<div class="relative z-20 px-12 py-16 max-w-7xl mx-auto">
+<!-- 1. Title Section -->
+<section class="flex flex-col lg:flex-row gap-12 items-start mb-24">
+<!-- Poster -->
+<div class="w-full lg:w-[340px] flex-shrink-0 group">
+<div class="relative rounded-xl overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]">
+<img class="w-full aspect-[2/3] object-cover" data-alt="vertical movie poster showing an astronaut standing on a desolate frozen landscape looking at a distant planet in the sky" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBl2qWK7aQI1d8O3siu6f3jOn4XsoAtFuCU7IWDF8MbUlIHjEhuD88wF8D-QeDE3S7UZI7ziGrEziU5WhCBjNuhnbi4-y_zVaSvlRWcSzXj3eNBl8LsBJLv6wwMoklxcOZzww3T8vUeuOv40WCET9M-ISkwFhz375RUi03YmcFxDiuAo44e50ED6TtIHyrOz2zeEdh2P_Yi46kDY9irKMLAlZrw3zgi-n1afEX_qAsYE16Kh0x7ogj14ww3LxrXAmOKsyjp7LkLDwB0"/>
+<div class="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl"></div>
+</div>
+</div>
+<!-- Info -->
+<div class="flex-1 pt-4">
+<div class="flex flex-wrap items-center gap-3 mb-4">
+<span class="bg-surface-container-high text-primary-container px-3 py-1 rounded-md text-[10px] font-bold tracking-widest uppercase font-label">Sci-Fi</span>
+<span class="bg-surface-container-high text-primary-container px-3 py-1 rounded-md text-[10px] font-bold tracking-widest uppercase font-label">Drama</span>
+</div>
+<h1 class="text-6xl md:text-7xl font-black font-headline tracking-tighter text-on-surface mb-6 leading-none">
+                        The Midnight Sky
+                    </h1>
+<div class="flex items-center gap-8 mb-10">
+<div class="flex items-center gap-4">
+<span class="text-5xl font-black font-headline text-primary-container">8.4</span>
+<div class="flex flex-col">
+<div class="flex text-tertiary-fixed-dim">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-sm font-bold ml-1 text-on-surface">/ 10</span>
+</div>
+<span class="text-[10px] uppercase tracking-widest text-outline font-bold">Community Average</span>
+</div>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant/30"></div>
+<div class="grid grid-cols-2 gap-x-8 gap-y-2">
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline font-bold">Director</p>
+<p class="text-sm font-semibold">George Clooney</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline font-bold">Release</p>
+<p class="text-sm font-semibold">Dec 23, 2020</p>
+</div>
+<div>
+<p class="text-[10px] uppercase tracking-widest text-outline font-bold">Runtime</p>
+<p class="text-sm font-semibold">2h 15m</p>
+</div>
+</div>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-extrabold px-10 py-5 rounded-xl flex items-center gap-3 shadow-lg shadow-primary-container/20 hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bookmark</span>
+                        ADD TO WATCHLIST
+                    </button>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+<!-- Left Column: Tabs & Interactions -->
+<div class="lg:col-span-8 space-y-16">
+<!-- 3. Tabs Section -->
+<section>
+<div class="flex gap-8 border-b border-outline-variant/20 mb-8">
+<button class="pb-4 text-sm font-bold uppercase tracking-widest text-primary-container border-b-2 border-primary-container">Synopsis &amp; Info</button>
+<button class="pb-4 text-sm font-bold uppercase tracking-widest text-outline hover:text-on-surface transition-colors">Trailer</button>
+</div>
+<div class="space-y-6">
+<p class="text-lg leading-relaxed text-on-surface-variant font-body">
+                                This post-apocalyptic tale follows Augustine, a lonely scientist in the Arctic, as he races to stop Sully and her fellow astronauts from returning home to a mysterious global catastrophe.
+                            </p>
+<div class="grid grid-cols-2 gap-8 pt-4">
+<div class="p-6 bg-surface-container rounded-xl">
+<h4 class="text-[10px] uppercase tracking-widest text-outline font-bold mb-4">Cast Members</h4>
+<ul class="space-y-2 text-sm">
+<li>George Clooney <span class="text-outline italic">— Augustine</span></li>
+<li>Felicity Jones <span class="text-outline italic">— Sully</span></li>
+<li>David Oyelowo <span class="text-outline italic">— Adewole</span></li>
+</ul>
+</div>
+<div class="p-6 bg-surface-container rounded-xl">
+<h4 class="text-[10px] uppercase tracking-widest text-outline font-bold mb-4">Studio</h4>
+<p class="text-sm">Anonymous Content</p>
+<p class="text-sm">Smokehouse Pictures</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. User Reviews -->
+<section>
+<div class="flex justify-between items-end mb-8">
+<h3 class="text-2xl font-black font-headline tracking-tight">Audience Voice</h3>
+<button class="text-[11px] font-bold uppercase tracking-widest text-primary hover:underline">Write Your Review</button>
+</div>
+<div class="space-y-6">
+<!-- Review 1 -->
+<div class="p-8 bg-surface-container-low rounded-xl border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a young smiling woman with brown hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDfbLV63z2DiY55wvmlaUr1ycBegxpNzDk8EFq1vFfbMNrzUlgnWTg1umZkJmNQQwumq-Swf2tJpaooTYUV2XYVSpdpAa-we2Xwvvzti3ExAPYX4s3gpJ5UO8VWaa8n_Az51WbXqL0E-zUBa1g2hwTVj3vNGePr55wVdEODp6li9lVWIvFKmfiia0o3BdLZIUthFYz-1Vz33hqeyPnZS80YtktNwxSVvHOd-inKJEImWdxscpmmjx4lXZBA0MJRTHYcdYxn-nJYRLcL"/>
+</div>
+<div>
+<p class="font-bold text-sm">Sarah K.</p>
+<p class="text-[10px] text-outline uppercase font-bold">Top Contributor</p>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-highest px-3 py-1 rounded-lg">
+<span class="text-primary-container font-black text-sm">9</span>
+<span class="text-outline text-[10px]">/ 10</span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed italic">
+                                    "A hauntingly beautiful score and cinematography. It's slower than your average space flick, but the emotional payoff in the third act is absolutely worth it."
+                                </p>
+</div>
+<!-- Review 2 -->
+<div class="p-8 bg-surface-container-low rounded-xl border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="portrait of a bearded man in a casual shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0Q-xpSTJ5mvUO6E0ixRouguhqFfw2lbOmEEIaQnKRZwwIkr2dwZdcbZbIe-g0hPQbOFoTs_jpLR0P--2l476HLJmOAiVQ8BdVuwjSOQFdDb_XuYt1MUROWmWGJqLOvJfhPPygg8Q15uffH2azpWfmRnkzZQIO_nRdNud07G1TrFe6oJNWJxlHWsCo7P7S1HHvyx2SBw5CiGrQrfAWEkXBfhtrnc2UNqhGE3k8x4IKLSG5dVHQN6lEoFE51z2k8U5eGM7YCnLLI9Ou"/>
+</div>
+<div>
+<p class="font-bold text-sm">Marcus V.</p>
+<p class="text-[10px] text-outline uppercase font-bold">Film Critic</p>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-container-highest px-3 py-1 rounded-lg">
+<span class="text-primary-container font-black text-sm">7</span>
+<span class="text-outline text-[10px]">/ 10</span>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed italic">
+                                    "Visually stunning, but some narrative gaps left me wanting more depth in the global catastrophe subplot. Still, Clooney delivers a powerhouse performance."
+                                </p>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Interaction Panel -->
+<div class="lg:col-span-4">
+<div class="sticky top-12 space-y-8">
+<!-- 2. Interaction Panel -->
+<div class="bg-surface-container p-8 rounded-2xl shadow-xl">
+<h3 class="text-lg font-bold font-headline mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" style="font-variation-settings: 'FILL' 1;">grade</span>
+                                Rate this Title
+                            </h3>
+<div class="space-y-8">
+<div>
+<div class="flex justify-between mb-4">
+<span class="text-[10px] uppercase tracking-widest text-outline font-bold">Your Score</span>
+<span class="text-primary-container font-black" id="rating-value">8</span>
+</div>
+<input class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary-container" max="10" min="1" type="range" value="8"/>
+<div class="flex justify-between mt-2 px-1">
+<span class="text-[9px] text-outline font-bold">1</span>
+<span class="text-[9px] text-outline font-bold">5</span>
+<span class="text-[9px] text-outline font-bold">10</span>
+</div>
+</div>
+<div>
+<label class="block text-[10px] uppercase tracking-widest text-outline font-bold mb-3">Add Review (Optional)</label>
+<textarea class="w-full bg-surface-container-lowest border-none rounded-xl text-sm focus:ring-1 focus:ring-primary-container/50 placeholder:text-outline/30" placeholder="What did you think of the cinematography?" rows="4"></textarea>
+</div>
+<button class="w-full py-4 bg-primary-container/10 hover:bg-primary-container/20 text-primary-container font-headline font-extrabold text-xs uppercase tracking-widest rounded-xl transition-all border border-primary-container/20 active:scale-95">
+                                    SUBMIT SCORE
+                                </button>
+</div>
+</div>
+<!-- Recommendations / Related -->
+<div class="space-y-6">
+<h4 class="text-[11px] uppercase tracking-widest text-outline font-bold">Similar Titles</h4>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="movie poster artwork of a black hole in space with intense light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpAt5pTXBx4ncxA4LxGFGJ-eCco1tw6vZD5bHKtncsI-xJ4NIMK7QvC4X9djlOoljJG3cQRKGEkRaSXMqH24ufx8VgNlB5jP_Z0C5MvVK2aU4UA9BFJrj63BNJ3pVZyG8iMy8YP8dLuliQaqX_MiUq-jwAP9A7bDSrXytWv88e5GD5W1UfRSDDUApbXgU5g8FAKotB-1gSoCas2Awh-LjmUTza62z8h7hHUuflghw6Ylh6oCYPN2Ve8kLw1JbrIsbgaBa_uze0diFT"/>
+</div>
+<div>
+<p class="text-sm font-bold group-hover:text-primary-container transition-colors">Interstellar</p>
+<p class="text-xs text-outline">Sci-Fi • 2014</p>
+</div>
+</div>
+<div class="flex items-center gap-4 group cursor-pointer">
+<div class="w-16 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="movie poster artwork showing a futuristic circular spacecraft in orbit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOZNgPZpC7eQDSULmThdBFcp4Eiuzv07XeDADYClIjcIMQik-XajjBfPn8B93ACxVgyWA1aE-Byu6RzDe8RwgocsCtvMdyQJjJiz7QVTi_g4ssiUK1EHi1fFF3mooVAEfRAj3nzsoaB0LtAEAhPSKuT2ynzdmKXD80fULXfTb7qOiswWKrbEluoxU-qg7tJOWSm1gngM595FOIP6hs9BtIAr9qjF4LMJOtEyOpzfazbTB9rJqSXAInAgKl4C9Ns8aDm5EQ9GSNhIXA"/>
+</div>
+<div>
+<p class="text-sm font-bold group-hover:text-primary-container transition-colors">Ad Astra</p>
+<p class="text-xs text-outline">Sci-Fi • 2019</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
