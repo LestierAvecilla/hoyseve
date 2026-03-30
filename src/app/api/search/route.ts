@@ -1,4 +1,15 @@
+import { searchAnime } from "@/lib/anilist";
 import { searchMulti, posterUrl } from "@/lib/tmdb";
+
+function normalizeTitle(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -9,10 +20,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Búsqueda bilingüe en paralelo: es-MX + en-US
-    const [esResults, enResults] = await Promise.all([
+    const [esResults, enResults, animeResults] = await Promise.all([
       searchMulti(q.trim(), "es-MX"),
       searchMulti(q.trim(), "en-US"),
+      searchAnime(q.trim(), 1, 8),
     ]);
 
     // Deduplicar por "id-mediaType", preferir el resultado en español
@@ -27,10 +38,9 @@ export async function GET(request: Request) {
       }
     }
 
-    const merged = Array.from(seen.values()).slice(0, 8);
-
-    const formatted = merged.map((r) => ({
+    const tmdbFormatted = Array.from(seen.values()).map((r) => ({
       id: r.id,
+      source: "tmdb" as const,
       media_type: r.media_type,
       title: r.title ?? r.name ?? "",
       poster_url: r.poster_path ? posterUrl(r.poster_path, "w92") : null,
@@ -42,7 +52,33 @@ export async function GET(request: Request) {
           : null,
     }));
 
-    return Response.json(formatted);
+    const animeFormatted = animeResults.map((r) => ({
+      id: r.id,
+      source: "anilist" as const,
+      media_type: "anime" as const,
+      title: r.title.english ?? r.title.romaji ?? r.title.native ?? "",
+      poster_url: r.coverImage.medium ?? r.coverImage.large ?? null,
+      year: r.seasonYear,
+    }));
+
+    const combined = [...tmdbFormatted, ...animeFormatted];
+    const deduped = new Map<string, (typeof combined)[number]>();
+    const animeFingerprints = new Set(
+      animeFormatted.map((item) => `${normalizeTitle(item.title)}-${item.year ?? "na"}`)
+    );
+
+    for (const item of combined) {
+      const identityKey = `${item.source}-${item.media_type}-${item.id}`;
+      const semanticKey = `${normalizeTitle(item.title)}-${item.year ?? "na"}`;
+
+      if (item.source === "tmdb" && animeFingerprints.has(semanticKey) && item.media_type !== "movie") {
+        continue;
+      }
+
+      if (!deduped.has(identityKey)) deduped.set(identityKey, item);
+    }
+
+    return Response.json(Array.from(deduped.values()).slice(0, 8));
   } catch {
     return Response.json([], { status: 500 });
   }

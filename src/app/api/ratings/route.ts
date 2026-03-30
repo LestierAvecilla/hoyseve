@@ -4,6 +4,14 @@ import { db } from "@/lib/db";
 import { ratings } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 
+function isValidSource(source: unknown): source is "tmdb" | "anilist" {
+  return source === "tmdb" || source === "anilist";
+}
+
+function isValidMediaType(mediaType: unknown): mediaType is "movie" | "tv" | "anime" {
+  return mediaType === "movie" || mediaType === "tv" || mediaType === "anime";
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -11,13 +19,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { tmdbId, mediaType, score, review } = await req.json();
+    const { tmdbId, mediaType, score, review, source = "tmdb" } = await req.json();
 
-    if (!tmdbId || !mediaType || !score) {
+    if (!tmdbId || !mediaType || !score || !source) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    if (!["movie", "tv"].includes(mediaType)) {
+    if (!isValidSource(source)) {
+      return NextResponse.json({ error: "Invalid source" }, { status: 400 });
+    }
+
+    if (!isValidMediaType(mediaType)) {
       return NextResponse.json({ error: "Invalid mediaType" }, { status: 400 });
     }
 
@@ -31,12 +43,13 @@ export async function POST(req: NextRequest) {
       .values({
         userId: session.user.id,
         tmdbId: Number(tmdbId),
+        source,
         mediaType,
         score: Number(score),
         review: review ?? null,
       })
       .onConflictDoUpdate({
-        target: [ratings.userId, ratings.tmdbId, ratings.mediaType],
+        target: [ratings.userId, ratings.source, ratings.tmdbId, ratings.mediaType],
         set: {
           score: Number(score),
           review: review ?? null,
@@ -61,9 +74,14 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const tmdbId = searchParams.get("tmdbId");
   const mediaType = searchParams.get("mediaType");
+  const source = searchParams.get("source") ?? "tmdb";
 
   if (!tmdbId || !mediaType) {
     return NextResponse.json({ error: "Missing tmdbId or mediaType" }, { status: 400 });
+  }
+
+  if (!isValidSource(source) || !isValidMediaType(mediaType)) {
+    return NextResponse.json({ error: "Invalid params" }, { status: 400 });
   }
 
   const [rating] = await db
@@ -72,8 +90,9 @@ export async function GET(req: NextRequest) {
     .where(
       and(
         eq(ratings.userId, session.user.id),
+        eq(ratings.source, source),
         eq(ratings.tmdbId, Number(tmdbId)),
-        eq(ratings.mediaType, mediaType as "movie" | "tv")
+        eq(ratings.mediaType, mediaType)
       )
     )
     .limit(1);

@@ -5,13 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { Search, Loader2, Film, Tv, UserCircle } from "lucide-react";
+import { Search, Loader2, Film, Tv, Sparkles, UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 
 interface SearchResult {
   id: number;
-  media_type: "movie" | "tv";
+  source: "tmdb" | "anilist";
+  media_type: "movie" | "tv" | "anime";
   title: string;
   poster_url: string | null;
   year: number | null;
@@ -64,11 +65,11 @@ export function Navbar() {
     debounceRef.current = setTimeout(() => search(val), 300);
   }
 
-  function handleSelect(id: number, mediaType: "movie" | "tv") {
+  function handleSelect(id: number, mediaType: "movie" | "tv" | "anime", source: "tmdb" | "anilist") {
     setIsOpen(false);
     setQuery("");
     setResults([]);
-    router.push(`/title/${mediaType}/${id}`);
+    router.push(source === "anilist" ? `/anime/${id}` : `/title/${mediaType}/${id}`);
   }
 
   return (
@@ -108,7 +109,7 @@ export function Navbar() {
                 {results.map((r) => (
                   <li key={`${r.media_type}-${r.id}`}>
                     <button
-                      onClick={() => handleSelect(r.id, r.media_type)}
+                      onClick={() => handleSelect(r.id, r.media_type, r.source)}
                       className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/5 transition-colors text-left"
                     >
                       {/* Poster pequeño */}
@@ -134,11 +135,13 @@ export function Navbar() {
                         <div className="flex items-center gap-1.5 mt-0.5">
                           {r.media_type === "movie" ? (
                             <Film size={10} className="text-primary flex-shrink-0" />
+                          ) : r.media_type === "anime" ? (
+                            <Sparkles size={10} className="text-primary flex-shrink-0" />
                           ) : (
                             <Tv size={10} className="text-primary flex-shrink-0" />
                           )}
                           <span className="text-[10px] uppercase tracking-wider text-primary font-bold">
-                            {r.media_type === "movie" ? t.search.movie : t.search.tv}
+                            {r.media_type === "movie" ? t.search.movie : r.media_type === "anime" ? t.anime.title : t.search.tv}
                           </span>
                           {r.year && (
                             <span className="text-[10px] text-muted-foreground">

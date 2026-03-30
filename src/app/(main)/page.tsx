@@ -14,8 +14,6 @@ const CATEGORIES = [
   { label: t.home.categories.anime, icon: "✦", href: "/categories/anime" },
   { label: t.home.categories.movies, icon: "🎬", href: "/categories/movies" },
   { label: t.home.categories.series, icon: "🖥", href: "/categories/series" },
-  { label: t.home.categories.documentaries, icon: "🌐", href: "/categories/documentaries" },
-  { label: t.home.categories.kdrama, icon: "♥", href: "/categories/kdrama" },
 ];
 
 export default async function HomePage() {
@@ -166,6 +164,9 @@ export default async function HomePage() {
           <h2 className="text-2xl font-black uppercase tracking-tight">
             {t.home.discoverByUniverse}
           </h2>
+          <p className="text-muted-foreground text-sm mt-3">
+            {t.home.categoriesSectionHint}
+          </p>
         </div>
 
         <div className="flex justify-center gap-4">

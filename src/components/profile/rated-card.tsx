@@ -2,9 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { posterUrl } from "@/lib/tmdb";
 
+type Source = "tmdb" | "anilist";
+
 interface RatedCardProps {
   tmdbId: number;
-  mediaType: "movie" | "tv";
+  source: Source;
+  mediaType: "movie" | "tv" | "anime";
   title: string;
   genre: string;
   year: number | null;
@@ -24,6 +27,7 @@ const FALLBACK_GRADIENTS = [
 
 export function RatedCard({
   tmdbId,
+  source,
   mediaType,
   title,
   genre,
@@ -32,8 +36,9 @@ export function RatedCard({
   posterPath,
   userName,
 }: RatedCardProps) {
-  const imgSrc = posterPath ? posterUrl(posterPath, "w342") : null;
+  const imgSrc = posterPath ? (source === "tmdb" ? posterUrl(posterPath, "w342") : posterPath) : null;
   const fallback = FALLBACK_GRADIENTS[tmdbId % FALLBACK_GRADIENTS.length];
+  const href = source === "anilist" ? `/anime/${tmdbId}` : `/title/${mediaType}/${tmdbId}`;
 
   const scoreColor =
     score >= 8
@@ -43,7 +48,7 @@ export function RatedCard({
         : "text-rose-400";
 
   return (
-    <Link href={`/title/${mediaType}/${tmdbId}`}>
+    <Link href={href}>
       <div className="group relative aspect-[2/3] rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-2">
         {/* Poster or gradient */}
         {imgSrc ? (

@@ -9,7 +9,8 @@ import { t } from "@/lib/i18n";
 
 interface AddToWatchlistButtonProps {
   tmdbId: number;
-  mediaType: "movie" | "tv";
+  mediaType: "movie" | "tv" | "anime";
+  source?: "tmdb" | "anilist";
   title: string;
   posterPath: string | null;
 }
@@ -17,6 +18,7 @@ interface AddToWatchlistButtonProps {
 export function AddToWatchlistButton({
   tmdbId,
   mediaType,
+  source = "tmdb",
   title,
   posterPath,
 }: AddToWatchlistButtonProps) {
@@ -35,7 +37,7 @@ export function AddToWatchlistButton({
       return;
     }
 
-    fetch(`/api/watchlist/check?tmdbId=${tmdbId}&mediaType=${mediaType}`)
+    fetch(`/api/watchlist/check?tmdbId=${tmdbId}&mediaType=${mediaType}&source=${source}`)
       .then((r) => r.json())
       .then((data) => {
         if (data?.inWatchlist !== undefined) {
@@ -44,11 +46,11 @@ export function AddToWatchlistButton({
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [status, tmdbId, mediaType]);
+  }, [status, tmdbId, mediaType, source]);
 
   async function handleClick() {
     if (status === "unauthenticated") {
-      router.push(`/login?callbackUrl=/title/${mediaType}/${tmdbId}`);
+      router.push(`/login?callbackUrl=${source === "anilist" ? `/anime/${tmdbId}` : `/title/${mediaType}/${tmdbId}`}`);
       return;
     }
     if (busy || loading) return;
@@ -61,7 +63,7 @@ export function AddToWatchlistButton({
     try {
       if (wasIn) {
         const res = await fetch(
-          `/api/watchlist?tmdbId=${tmdbId}&mediaType=${mediaType}`,
+          `/api/watchlist?tmdbId=${tmdbId}&mediaType=${mediaType}&source=${source}`,
           { method: "DELETE" }
         );
         if (!res.ok) setInWatchlist(wasIn); // rollback
@@ -69,7 +71,7 @@ export function AddToWatchlistButton({
         const res = await fetch("/api/watchlist", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tmdbId, mediaType, title, posterPath }),
+          body: JSON.stringify({ tmdbId, mediaType, source, title, posterPath }),
         });
         if (!res.ok) setInWatchlist(wasIn); // rollback
       }

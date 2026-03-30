@@ -4,9 +4,12 @@ import { posterUrl } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 
+type Source = "tmdb" | "anilist";
+
 interface ReviewListCardProps {
   tmdbId: number;
-  mediaType: "movie" | "tv";
+  source: Source;
+  mediaType: "movie" | "tv" | "anime";
   title: string;
   posterPath: string | null;
   genre: string;
@@ -30,6 +33,7 @@ function timeAgo(date: Date): string {
 
 export function ReviewListCard({
   tmdbId,
+  source,
   mediaType,
   title,
   posterPath,
@@ -39,7 +43,8 @@ export function ReviewListCard({
   review,
   updatedAt,
 }: ReviewListCardProps) {
-  const imgSrc = posterPath ? posterUrl(posterPath, "w185") : null;
+  const imgSrc = posterPath ? (source === "tmdb" ? posterUrl(posterPath, "w185") : posterPath) : null;
+  const href = source === "anilist" ? `/anime/${tmdbId}` : `/title/${mediaType}/${tmdbId}`;
 
   const scoreColor =
     score >= 8
@@ -60,7 +65,7 @@ export function ReviewListCard({
 
       {/* Póster */}
       <Link
-        href={`/title/${mediaType}/${tmdbId}`}
+        href={href}
         className="flex-shrink-0 w-16 h-24 rounded-xl overflow-hidden bg-[#262a31] relative shadow-lg group-hover:shadow-primary/10 transition-shadow"
       >
         {imgSrc ? (
@@ -81,13 +86,13 @@ export function ReviewListCard({
         {/* Fila superior: título + score */}
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <Link href={`/title/${mediaType}/${tmdbId}`}>
+            <Link href={href}>
               <h4 className="font-bold text-[#dfe2eb] text-base leading-tight hover:text-[#00e5ff] transition-colors line-clamp-1">
                 {title}
               </h4>
             </Link>
             <p className="text-[11px] text-[#849396] uppercase tracking-widest font-medium mt-0.5">
-              {genre}{year ? ` · ${year}` : ""} · {mediaType === "movie" ? t.title.movie : t.title.tv}
+              {genre}{year ? ` · ${year}` : ""} · {mediaType === "movie" ? t.title.movie : mediaType === "tv" ? t.title.tv : t.anime.title}
             </p>
           </div>
 

@@ -13,6 +13,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { ratings, watchlist, users } from "@/lib/schema";
 import { eq, and, isNotNull, count, desc } from "drizzle-orm";
+import { getAnimeDetail } from "@/lib/anilist";
 import { getMovieDetail, getTVDetail, posterUrl } from "@/lib/tmdb";
 import { RatedCard } from "@/components/profile/rated-card";
 import { ProfileTabs } from "@/components/profile/profile-tabs";
@@ -91,8 +92,9 @@ export default async function ProfilePage() {
 
   // ── Fetch TMDB data for each rated title ──
   type EnrichedRating = {
+    source: "tmdb" | "anilist";
     tmdbId: number;
-    mediaType: "movie" | "tv";
+    mediaType: "movie" | "tv" | "anime";
     score: number;
     review: string | null;
     updatedAt: Date;
@@ -105,9 +107,27 @@ export default async function ProfilePage() {
   const enriched: EnrichedRating[] = (
     await Promise.allSettled(
       recentRatings.map(async (r) => {
+        if (r.source === "anilist" || r.mediaType === "anime") {
+          const detail = await getAnimeDetail(r.tmdbId);
+          if (!detail) throw new Error("Anime not found");
+          return {
+            source: "anilist" as const,
+            tmdbId: r.tmdbId,
+            mediaType: "anime" as const,
+            score: r.score,
+            review: r.review,
+            updatedAt: r.updatedAt,
+            title: detail.title.english ?? detail.title.romaji ?? detail.title.native ?? "—",
+            posterPath: detail.coverImage.large ?? detail.coverImage.medium ?? detail.coverImage.extraLarge ?? null,
+            genre: detail.genres[0] ?? "—",
+            year: detail.seasonYear,
+          };
+        }
+
         if (r.mediaType === "movie") {
           const detail = await getMovieDetail(r.tmdbId);
           return {
+            source: "tmdb" as const,
             tmdbId: r.tmdbId,
             mediaType: "movie" as const,
             score: r.score,
@@ -123,6 +143,7 @@ export default async function ProfilePage() {
         } else {
           const detail = await getTVDetail(r.tmdbId);
           return {
+            source: "tmdb" as const,
             tmdbId: r.tmdbId,
             mediaType: "tv" as const,
             score: r.score,
@@ -139,9 +160,7 @@ export default async function ProfilePage() {
       })
     )
   )
-    .filter(
-      (r): r is PromiseFulfilledResult<EnrichedRating> => r.status === "fulfilled"
-    )
+    .filter((r) => r.status === "fulfilled")
     .map((r) => r.value);
 
   // ── Derived data ──
@@ -170,6 +189,7 @@ export default async function ProfilePage() {
           <RatedCard
             key={`${item.mediaType}-${item.tmdbId}`}
             tmdbId={item.tmdbId}
+            source={item.source}
             mediaType={item.mediaType}
             title={item.title}
             genre={item.genre}
@@ -205,8 +225,9 @@ export default async function ProfilePage() {
 
   // ── Enrich reviews with TMDB data ──
   type EnrichedReview = {
+    source: "tmdb" | "anilist";
     tmdbId: number;
-    mediaType: "movie" | "tv";
+    mediaType: "movie" | "tv" | "anime";
     score: number;
     review: string;
     updatedAt: Date;
@@ -219,9 +240,27 @@ export default async function ProfilePage() {
   const enrichedReviews: EnrichedReview[] = (
     await Promise.allSettled(
       reviewsRaw.map(async (r) => {
+        if (r.source === "anilist" || r.mediaType === "anime") {
+          const detail = await getAnimeDetail(r.tmdbId);
+          if (!detail) throw new Error("Anime not found");
+          return {
+            source: "anilist" as const,
+            tmdbId: r.tmdbId,
+            mediaType: "anime" as const,
+            score: r.score,
+            review: r.review!,
+            updatedAt: r.updatedAt,
+            title: detail.title.english ?? detail.title.romaji ?? detail.title.native ?? "—",
+            posterPath: detail.coverImage.large ?? detail.coverImage.medium ?? detail.coverImage.extraLarge ?? null,
+            genre: detail.genres[0] ?? "—",
+            year: detail.seasonYear,
+          };
+        }
+
         if (r.mediaType === "movie") {
           const detail = await getMovieDetail(r.tmdbId);
           return {
+            source: "tmdb" as const,
             tmdbId: r.tmdbId,
             mediaType: "movie" as const,
             score: r.score,
@@ -235,6 +274,7 @@ export default async function ProfilePage() {
         } else {
           const detail = await getTVDetail(r.tmdbId);
           return {
+            source: "tmdb" as const,
             tmdbId: r.tmdbId,
             mediaType: "tv" as const,
             score: r.score,
@@ -249,7 +289,7 @@ export default async function ProfilePage() {
       })
     )
   )
-    .filter((r): r is PromiseFulfilledResult<EnrichedReview> => r.status === "fulfilled")
+    .filter((r) => r.status === "fulfilled")
     .map((r) => r.value);
 
   // ── Reviews list (for ProfileTabs) ──
@@ -267,6 +307,7 @@ export default async function ProfilePage() {
           <ReviewListCard
             key={`${item.mediaType}-${item.tmdbId}`}
             tmdbId={item.tmdbId}
+            source={item.source}
             mediaType={item.mediaType}
             title={item.title}
             posterPath={item.posterPath}
@@ -422,7 +463,9 @@ export default async function ProfilePage() {
             <div className="space-y-3">
               {activityItems.map((item) => {
                 const imgSrc = item.posterPath
-                  ? posterUrl(item.posterPath, "w92")
+                  ? item.source === "tmdb"
+                    ? posterUrl(item.posterPath, "w92")
+                    : item.posterPath
                   : null;
                 const scoreColor =
                   item.score >= 8

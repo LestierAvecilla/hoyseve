@@ -70,13 +70,14 @@ export const ratings = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     tmdbId: integer("tmdb_id").notNull(),
-    mediaType: text("media_type", { enum: ["movie", "tv"] }).notNull(),
+    source: text("source", { enum: ["tmdb", "anilist"] }).default("tmdb").notNull(),
+    mediaType: text("media_type", { enum: ["movie", "tv", "anime"] }).notNull(),
     score: integer("score").notNull(), // 1-10
     review: text("review"),
     createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
   },
-  (t) => [unique().on(t.userId, t.tmdbId, t.mediaType)]
+  (t) => [unique().on(t.userId, t.source, t.tmdbId, t.mediaType)]
 );
 
 export const watchlist = pgTable(
@@ -87,13 +88,14 @@ export const watchlist = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     tmdbId: integer("tmdb_id").notNull(),
-    mediaType: text("media_type", { enum: ["movie", "tv"] }).notNull(),
+    source: text("source", { enum: ["tmdb", "anilist"] }).default("tmdb").notNull(),
+    mediaType: text("media_type", { enum: ["movie", "tv", "anime"] }).notNull(),
     title: text("title").notNull(),
     posterPath: text("poster_path"),
     watched: boolean("watched").default(false).notNull(),
     addedAt: timestamp("added_at", { mode: "date" }).defaultNow().notNull(),
   },
-  (t) => [unique().on(t.userId, t.tmdbId, t.mediaType)]
+  (t) => [unique().on(t.userId, t.source, t.tmdbId, t.mediaType)]
 );
 
 // ─── Types ────────────────────────────────────────────────────────────────────

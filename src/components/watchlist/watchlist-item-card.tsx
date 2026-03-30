@@ -8,10 +8,13 @@ import { posterUrl } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 
+type Source = "tmdb" | "anilist";
+
 type WatchlistItem = {
   id: string;
   tmdbId: number;
-  mediaType: "movie" | "tv";
+  source: Source;
+  mediaType: "movie" | "tv" | "anime";
   title: string;
   posterPath: string | null;
   watched: boolean;
@@ -36,8 +39,13 @@ export function WatchlistItemCard({ item }: { item: WatchlistItem }) {
   const [watchBusy, setWatchBusy] = useState(false);
   const [removeBusy, setRemoveBusy] = useState(false);
 
-  const imgSrc = item.posterPath ? posterUrl(item.posterPath, "w342") : null;
+  const imgSrc = item.posterPath
+    ? item.source === "tmdb"
+      ? posterUrl(item.posterPath, "w342")
+      : item.posterPath
+    : null;
   const addedLabel = formatAddedLabel(item.addedAt);
+  const detailHref = item.source === "anilist" ? `/anime/${item.tmdbId}` : `/title/${item.mediaType}/${item.tmdbId}`;
 
   async function toggleWatched() {
     if (watchBusy) return;
@@ -50,6 +58,7 @@ export function WatchlistItemCard({ item }: { item: WatchlistItem }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tmdbId: item.tmdbId,
+          source: item.source,
           mediaType: item.mediaType,
           watched: next,
         }),
@@ -67,7 +76,7 @@ export function WatchlistItemCard({ item }: { item: WatchlistItem }) {
     setRemoveBusy(true);
     try {
       const res = await fetch(
-        `/api/watchlist?tmdbId=${item.tmdbId}&mediaType=${item.mediaType}`,
+        `/api/watchlist?tmdbId=${item.tmdbId}&mediaType=${item.mediaType}&source=${item.source}`,
         { method: "DELETE" }
       );
       if (res.ok) setRemoved(true);
@@ -166,13 +175,13 @@ export function WatchlistItemCard({ item }: { item: WatchlistItem }) {
 
       {/* Info */}
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        <Link href={`/title/${item.mediaType}/${item.tmdbId}`}>
+        <Link href={detailHref}>
           <h3 className="font-bold text-base text-white leading-tight mb-1 hover:text-primary transition-colors line-clamp-2">
             {item.title}
           </h3>
         </Link>
         <p className="text-xs text-white/60 font-medium uppercase tracking-wider">
-          {item.mediaType === "movie" ? t.search.movie : t.search.tvSeries}
+          {item.mediaType === "movie" ? t.search.movie : item.mediaType === "tv" ? t.search.tvSeries : t.anime.title}
         </p>
       </div>
     </div>

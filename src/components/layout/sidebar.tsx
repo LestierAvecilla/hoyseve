@@ -4,15 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Home, TrendingUp, Bookmark, Users, UserCircle, LogOut } from "lucide-react";
+import { Home, Bookmark, UserCircle, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 
 const navItems = [
   { href: "/", label: t.nav.home, icon: Home },
-  { href: "/trending", label: t.nav.discovery, icon: TrendingUp },
   { href: "/watchlist", label: t.nav.watchlist, icon: Bookmark },
-  { href: "/community", label: t.nav.community, icon: Users },
   { href: "/profile", label: t.nav.profile, icon: UserCircle },
 ];
 

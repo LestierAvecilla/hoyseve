@@ -112,10 +112,13 @@ export interface TMDBSearchResult {
   media_type: "movie" | "tv" | "person";
   title?: string;         // movie
   name?: string;          // tv / person
+  overview?: string;
   poster_path: string | null;
   release_date?: string;  // movie
   first_air_date?: string; // tv
   vote_average?: number;
+  original_language?: string;
+  genre_ids?: number[];
 }
 
 // ─── Cliente base ─────────────────────────────────────────────────────────────
@@ -203,12 +206,56 @@ export interface TMDBTVShow {
   genre_ids: number[];
 }
 
+export interface TMDBDiscoverMovie extends TMDBMovie {}
+
+export interface TMDBDiscoverTV extends TMDBTVShow {
+  original_name: string;
+}
+
+interface DiscoverOptions {
+  page?: number;
+  genreId?: number;
+  sortBy?: "popularity.desc" | "vote_average.desc" | "primary_release_date.desc" | "first_air_date.desc";
+}
+
 // ─── Funciones públicas ───────────────────────────────────────────────────────
 
 /** Top 10 películas de la semana */
 export async function getTrending(): Promise<TMDBMovie[]> {
   const data = await fetchTMDB<{ results: TMDBMovie[] }>("trending/movie/week", {}, "es-MX");
   return data.results.slice(0, 10);
+}
+
+export async function discoverMovies({ page = 1, genreId, sortBy = "popularity.desc" }: DiscoverOptions = {}): Promise<TMDBDiscoverMovie[]> {
+  const data = await fetchTMDB<{ results: TMDBDiscoverMovie[] }>(
+    "discover/movie",
+    {
+      sort_by: sortBy,
+      include_adult: "false",
+      page: String(page),
+      with_watch_monetization_types: "flatrate",
+      ...(genreId ? { with_genres: String(genreId) } : {}),
+    },
+    "es-MX"
+  );
+
+  return data.results;
+}
+
+export async function discoverSeries({ page = 1, genreId, sortBy = "popularity.desc" }: DiscoverOptions = {}): Promise<TMDBDiscoverTV[]> {
+  const data = await fetchTMDB<{ results: TMDBDiscoverTV[] }>(
+    "discover/tv",
+    {
+      sort_by: sortBy,
+      include_adult: "false",
+      page: String(page),
+      with_watch_monetization_types: "flatrate",
+      ...(genreId ? { with_genres: String(genreId) } : {}),
+    },
+    "es-MX"
+  );
+
+  return data.results;
 }
 
 /** Detalle completo de una película por id */
@@ -252,6 +299,62 @@ export async function searchMulti(query: string, language: string = "es-MX"): Pr
   return data.results
     .filter((r) => r.media_type === "movie" || r.media_type === "tv")
     .slice(0, 8);
+}
+
+function normalizeTitle(value: string): string {
+  return value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export async function getLocalizedAnimeOverview(
+  titles: Array<string | null | undefined>,
+  year?: number | null
+): Promise<string | null> {
+  const uniqueTitles = Array.from(
+    new Set(titles.map((title) => title?.trim()).filter(Boolean) as string[])
+  );
+
+  if (uniqueTitles.length === 0) return null;
+
+  const queries = uniqueTitles.slice(0, 3);
+  const results = await Promise.all(
+    queries.flatMap((query) => [searchMulti(query, "es-MX"), searchMulti(query, "en-US")])
+  );
+
+  const candidates = results.flat();
+  const normalizedTitles = queries.map(normalizeTitle);
+
+  const scored = candidates
+    .filter((item) => item.overview)
+    .map((item) => {
+      const candidateTitle = normalizeTitle(item.title ?? item.name ?? "");
+      let score = 0;
+
+      for (const normalizedTitle of normalizedTitles) {
+        if (candidateTitle === normalizedTitle) score += 100;
+        else if (candidateTitle.includes(normalizedTitle) || normalizedTitle.includes(candidateTitle)) score += 50;
+      }
+
+      const itemYear = item.release_date
+        ? new Date(item.release_date).getFullYear()
+        : item.first_air_date
+          ? new Date(item.first_air_date).getFullYear()
+          : null;
+
+      if (year && itemYear && Math.abs(itemYear - year) <= 1) score += 20;
+      if (item.original_language === "ja") score += 10;
+      if (item.genre_ids?.includes(16)) score += 10;
+
+      return { item, score };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  return scored[0]?.item.overview?.trim() ?? null;
 }
 
 /** Formatea runtime en minutos → "2h 15m" */

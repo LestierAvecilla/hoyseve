@@ -10,10 +10,11 @@ import { t } from "@/lib/i18n";
 
 interface RatingPanelProps {
   tmdbId: number;
-  mediaType: "movie" | "tv";
+  mediaType: "movie" | "tv" | "anime";
+  source?: "tmdb" | "anilist";
 }
 
-export function RatingPanel({ tmdbId, mediaType }: RatingPanelProps) {
+export function RatingPanel({ tmdbId, mediaType, source = "tmdb" }: RatingPanelProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [score, setScore] = useState(8);
@@ -26,7 +27,7 @@ export function RatingPanel({ tmdbId, mediaType }: RatingPanelProps) {
   // Load existing rating on mount
   useEffect(() => {
     if (status !== "authenticated") { setLoaded(true); return; }
-    fetch(`/api/ratings?tmdbId=${tmdbId}&mediaType=${mediaType}`)
+    fetch(`/api/ratings?tmdbId=${tmdbId}&mediaType=${mediaType}&source=${source}`)
       .then((r) => r.json())
       .then((data) => {
         if (data && data.score) {
@@ -36,11 +37,11 @@ export function RatingPanel({ tmdbId, mediaType }: RatingPanelProps) {
       })
       .catch(() => {})
       .finally(() => setLoaded(true));
-  }, [status, tmdbId, mediaType]);
+  }, [status, tmdbId, mediaType, source]);
 
   async function handleSubmit() {
     if (!session) {
-      router.push(`/login?callbackUrl=/title/${mediaType}/${tmdbId}`);
+      router.push(`/login?callbackUrl=${source === "anilist" ? `/anime/${tmdbId}` : `/title/${mediaType}/${tmdbId}`}`);
       return;
     }
 
@@ -50,7 +51,7 @@ export function RatingPanel({ tmdbId, mediaType }: RatingPanelProps) {
       const res = await fetch("/api/ratings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tmdbId, mediaType, score, review }),
+        body: JSON.stringify({ tmdbId, mediaType, source, score, review }),
       });
         if (!res.ok) {
           const data = await res.json();
@@ -86,7 +87,7 @@ export function RatingPanel({ tmdbId, mediaType }: RatingPanelProps) {
       {status === "unauthenticated" && (
         <p className="text-xs text-muted-foreground text-center py-2">
           <button
-            onClick={() => router.push(`/login?callbackUrl=/title/${mediaType}/${tmdbId}`)}
+            onClick={() => router.push(`${source === "anilist" ? `/login?callbackUrl=/anime/${tmdbId}` : `/login?callbackUrl=/title/${mediaType}/${tmdbId}`}`)}
             className="text-primary hover:underline"
           >
             {t.title.signInToRateInline}

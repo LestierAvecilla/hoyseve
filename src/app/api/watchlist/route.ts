@@ -4,6 +4,14 @@ import { db } from "@/lib/db";
 import { watchlist } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 
+function isValidSource(source: unknown): source is "tmdb" | "anilist" {
+  return source === "tmdb" || source === "anilist";
+}
+
+function isValidMediaType(mediaType: unknown): mediaType is "movie" | "tv" | "anime" {
+  return mediaType === "movie" || mediaType === "tv" || mediaType === "anime";
+}
+
 export async function GET() {
   const session = await auth();
   if (!session?.user?.id) {
@@ -26,13 +34,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { tmdbId, mediaType, title, posterPath } = await req.json();
+    const { tmdbId, mediaType, title, posterPath, source = "tmdb" } = await req.json();
 
-    if (!tmdbId || !mediaType || !title) {
+    if (!tmdbId || !mediaType || !title || !source) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
 
-    if (!["movie", "tv"].includes(mediaType)) {
+    if (!isValidSource(source)) {
+      return NextResponse.json({ error: "Invalid source" }, { status: 400 });
+    }
+
+    if (!isValidMediaType(mediaType)) {
       return NextResponse.json({ error: "Invalid mediaType" }, { status: 400 });
     }
 
@@ -41,6 +53,7 @@ export async function POST(req: NextRequest) {
       .values({
         userId: session.user.id,
         tmdbId: Number(tmdbId),
+        source,
         mediaType,
         title,
         posterPath: posterPath ?? null,
@@ -64,9 +77,14 @@ export async function DELETE(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const tmdbId = searchParams.get("tmdbId");
   const mediaType = searchParams.get("mediaType");
+  const source = searchParams.get("source") ?? "tmdb";
 
   if (!tmdbId || !mediaType) {
     return NextResponse.json({ error: "Missing tmdbId or mediaType" }, { status: 400 });
+  }
+
+  if (!isValidSource(source) || !isValidMediaType(mediaType)) {
+    return NextResponse.json({ error: "Invalid params" }, { status: 400 });
   }
 
   await db
@@ -74,8 +92,9 @@ export async function DELETE(req: NextRequest) {
     .where(
       and(
         eq(watchlist.userId, session.user.id),
+        eq(watchlist.source, source),
         eq(watchlist.tmdbId, Number(tmdbId)),
-        eq(watchlist.mediaType, mediaType as "movie" | "tv")
+        eq(watchlist.mediaType, mediaType)
       )
     );
 
@@ -89,10 +108,14 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const { tmdbId, mediaType, watched } = await req.json();
+    const { tmdbId, mediaType, watched, source = "tmdb" } = await req.json();
 
-    if (!tmdbId || !mediaType || watched === undefined) {
+    if (!tmdbId || !mediaType || watched === undefined || !source) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+    }
+
+    if (!isValidSource(source) || !isValidMediaType(mediaType)) {
+      return NextResponse.json({ error: "Invalid params" }, { status: 400 });
     }
 
     const [item] = await db
@@ -101,8 +124,9 @@ export async function PATCH(req: NextRequest) {
       .where(
         and(
           eq(watchlist.userId, session.user.id),
+          eq(watchlist.source, source),
           eq(watchlist.tmdbId, Number(tmdbId)),
-          eq(watchlist.mediaType, mediaType as "movie" | "tv")
+          eq(watchlist.mediaType, mediaType)
         )
       )
       .returning();
