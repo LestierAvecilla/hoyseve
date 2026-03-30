@@ -8,7 +8,21 @@ import { db } from "@/lib/db";
 import { users, accounts, sessions, verificationTokens } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
+const authSecret = process.env.AUTH_SECRET;
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+if (!authSecret) {
+  throw new Error("AUTH_SECRET is required");
+}
+
+if (!googleClientId || !googleClientSecret) {
+  throw new Error("Google OAuth environment variables are required");
+}
+
 const config: NextAuthConfig = {
+  secret: authSecret,
+  trustHost: true,
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
@@ -21,8 +35,8 @@ const config: NextAuthConfig = {
   },
   providers: [
     Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
     }),
     Credentials({
       name: "credentials",
