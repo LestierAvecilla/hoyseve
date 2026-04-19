@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { Home, Bookmark, UserCircle, LogOut } from "lucide-react";
+import { Home, Bookmark, UserCircle, LogOut, Rss } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 
 const navItems = [
   { href: "/", label: t.nav.home, icon: Home },
+  { href: "/feed", label: t.nav.feed, icon: Rss },
   { href: "/watchlist", label: t.nav.watchlist, icon: Bookmark },
   { href: "/profile", label: t.nav.profile, icon: UserCircle },
 ];
@@ -69,7 +70,8 @@ export function Sidebar() {
             {/* User info */}
             <div className="flex items-center gap-2 px-3 py-2">
               {session.user.image ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={session.user.image}
                   alt={session.user.name ?? "User"}
                   width={24}

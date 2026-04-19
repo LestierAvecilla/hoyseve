@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { ratings } from "@/lib/schema";
+import { ratings, activities } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 
 function isValidSource(source: unknown): source is "tmdb" | "anilist" {
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { tmdbId, mediaType, score, review, source = "tmdb" } = await req.json();
+    const { tmdbId, mediaType, score, review, source = "tmdb", title, posterPath } = await req.json();
 
     if (!tmdbId || !mediaType || !score || !source) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -57,6 +57,19 @@ export async function POST(req: NextRequest) {
         },
       })
       .returning();
+
+    // Create activity entry
+    await db.insert(activities).values({
+      userId: session.user.id,
+      type: result.review ? "review" : "rating",
+      tmdbId: result.tmdbId,
+      source: result.source,
+      mediaType: result.mediaType,
+      score: result.score,
+      review: result.review ?? null,
+      title,
+      posterPath: posterPath ?? null,
+    });
 
     return NextResponse.json(result);
   } catch (err) {

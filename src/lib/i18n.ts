@@ -4,6 +4,7 @@ export const t = {
   // ── Sidebar / Nav ──────────────────────────────────────────────────────────
   nav: {
     home: "Inicio",
+    feed: "Feed",
     watchlist: "Mi Lista",
     profile: "Perfil",
     logout: "Cerrar sesión",
@@ -131,6 +132,26 @@ export const t = {
       daysSuffix: "días",
       monthsSuffix: "meses",
     },
+    // Public profile
+    follow: "Seguir",
+    unfollow: "Dejar de seguir",
+    followers: "Seguidores",
+    following: "Siguiendo",
+    hallOfFame: "Salón de la Fama",
+    metrics: "Métricas",
+    totalWatched: "Total vistos",
+    avgRating: "Calificación prom.",
+    topGenre: "Género favorito",
+    userNotFound: "Usuario no encontrado",
+    ownProfileError: "Este es tu perfil",
+    // Drawers
+    followersDrawerTitle: "Seguidores",
+    followingDrawerTitle: "Siguiendo",
+    emptyFollowers: "Este usuario todavía no tiene seguidores.",
+    emptyFollowing: "Este usuario todavía no sigue a nadie.",
+    loadMore: "Cargar más",
+    errorLoading: "No se pudo cargar la lista. Intentá de nuevo.",
+    loadingList: "Cargando...",
   },
 
   // ── Login ──────────────────────────────────────────────────────────────────
@@ -244,6 +265,17 @@ export const t = {
       animation: "Animación",
       adventure: "Aventura",
     },
+  },
+
+  // ── Feed ──────────────────────────────────────────────────────────────────
+  feed: {
+    title: "Actividad",
+    following: "Siguiendo",
+    global: "Global",
+    noActivityFollowing: "Todavía no hay actividad de las personas que seguís.",
+    noActivityGlobal: "Todavía no hay actividad.",
+    loadMore: "Cargar más",
+    loading: "Cargando...",
   },
 
   anime: {

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import {
   Star,
   MessageSquare,
@@ -168,6 +169,8 @@ export default async function ProfilePage() {
   const userImage = userRecord?.image ?? session.user.image ?? null;
   const userEmail = userRecord?.email ?? session.user.email ?? "";
   const emailHandle = userEmail.split("@")[0];
+  const userHandle = userRecord?.username ?? session.user.username ?? null;
+  const displayHandle = userHandle ?? emailHandle;
   const joinDate = userRecord?.createdAt
     ? formatJoinDate(userRecord.createdAt)
     : null;
@@ -370,10 +373,12 @@ export default async function ProfilePage() {
                   </h2>
                   <BadgeCheck size={22} className="text-[#00e5ff] flex-shrink-0" />
                 </div>
-                <p className="text-[#849396] font-medium text-sm">
-                  @{emailHandle}
-                  {joinDate && ` • ${t.profile.joinedSince} ${joinDate}`}
-                </p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-[#849396] font-medium text-sm">
+                    @{displayHandle}
+                    {joinDate && ` • ${t.profile.joinedSince} ${joinDate}`}
+                  </p>
+                </div>
               </div>
 
               {/* Stats */}
@@ -398,9 +403,12 @@ export default async function ProfilePage() {
 
             {/* Actions */}
             <div className="flex gap-3 flex-shrink-0">
-              <button className="px-6 py-2.5 bg-gradient-to-br from-[#c3f5ff] to-[#00e5ff] text-[#001f24] font-bold rounded-xl text-sm active:scale-95 shadow-lg shadow-[#00e5ff]/20 transition-transform">
+              <Link
+                href="/profile/edit"
+                className="px-6 py-2.5 bg-gradient-to-br from-[#c3f5ff] to-[#00e5ff] text-[#001f24] font-bold rounded-xl text-sm active:scale-95 shadow-lg shadow-[#00e5ff]/20 transition-transform"
+              >
                 {t.profile.editProfile}
-              </button>
+              </Link>
               <button className="px-3 py-2.5 bg-[#262a31] text-[#dfe2eb] rounded-xl hover:bg-[#31353c] transition-colors">
                 <Share2 size={18} />
               </button>

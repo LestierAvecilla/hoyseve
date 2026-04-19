@@ -66,15 +66,52 @@ const config: NextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session: sessionUpdate }) {
       if (user) {
         token.id = user.id;
+        // Fetch username from DB on first sign-in
+        if (user.id) {
+          const [dbUser] = await db
+            .select({ username: users.username })
+            .from(users)
+            .where(eq(users.id, user.id))
+            .limit(1);
+          token.username = dbUser?.username ?? null;
+        }
       }
+
+      // On session.update() call, re-fetch fresh data from DB
+      if (trigger === "update" && token.id) {
+        const [dbUser] = await db
+          .select({ name: users.name, username: users.username, image: users.image })
+          .from(users)
+          .where(eq(users.id, token.id as string))
+          .limit(1);
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.username = dbUser.username ?? null;
+          token.picture = dbUser.image ?? null;
+        }
+        // Also merge any fields passed via update() as a fallback
+        if (sessionUpdate?.username !== undefined) {
+          token.username = sessionUpdate.username;
+        }
+      }
+
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       if (token?.id) {
         session.user.id = token.id as string;
+      }
+      if (token?.username !== undefined) {
+        session.user.username = token.username as string | null;
+      }
+      // Transferir imagen: de OAuth (user.image) o del token actualizado (picture)
+      if (user?.image) {
+        session.user.image = user.image;
+      } else if (token?.picture) {
+        session.user.image = token.picture as string;
       }
       return session;
     },
