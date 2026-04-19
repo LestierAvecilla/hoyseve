@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
         hostname: "s4.anilist.co",
         pathname: "/file/anilistcdn/**",
       },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "api.dicebear.com",
+        pathname: "/**",
+      },
     ],
   },
 };

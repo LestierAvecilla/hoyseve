@@ -12,9 +12,11 @@ interface RatingPanelProps {
   tmdbId: number;
   mediaType: "movie" | "tv" | "anime";
   source?: "tmdb" | "anilist";
+  title: string;
+  posterPath?: string | null;
 }
 
-export function RatingPanel({ tmdbId, mediaType, source = "tmdb" }: RatingPanelProps) {
+export function RatingPanel({ tmdbId, mediaType, source = "tmdb", title, posterPath }: RatingPanelProps) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [score, setScore] = useState(8);
@@ -51,7 +53,7 @@ export function RatingPanel({ tmdbId, mediaType, source = "tmdb" }: RatingPanelP
       const res = await fetch("/api/ratings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tmdbId, mediaType, source, score, review }),
+        body: JSON.stringify({ tmdbId, mediaType, source, score, review, title, posterPath }),
       });
         if (!res.ok) {
           const data = await res.json();

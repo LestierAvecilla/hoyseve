@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { watchlist } from "@/lib/schema";
+import { watchlist, activities } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 
 function isValidSource(source: unknown): source is "tmdb" | "anilist" {
@@ -60,6 +60,19 @@ export async function POST(req: NextRequest) {
       })
       .onConflictDoNothing()
       .returning();
+
+    // Create activity entry (only for new items, not duplicates)
+    if (item) {
+      await db.insert(activities).values({
+        userId: session.user.id,
+        type: "watchlist_add",
+        tmdbId: Number(tmdbId),
+        source,
+        mediaType,
+        title,
+        posterPath: posterPath ?? null,
+      });
+    }
 
     return NextResponse.json(item ?? { message: "Already in watchlist" });
   } catch (err) {

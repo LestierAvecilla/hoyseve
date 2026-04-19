@@ -64,6 +64,7 @@ export default async function AnimeDetailPage({
       updatedAt: ratings.updatedAt,
       userName: users.name,
       userImage: users.image,
+      userHandle: users.username,
     })
     .from(ratings)
     .innerJoin(users, eq(ratings.userId, users.id))
@@ -264,6 +265,7 @@ export default async function AnimeDetailPage({
                       key={`${review.userName ?? "anon"}-${index}`}
                       userName={review.userName ?? t.title.anonymous}
                       userImage={review.userImage ?? null}
+                      userHandle={review.userHandle ?? null}
                       score={review.score}
                       review={review.review!}
                       updatedAt={review.updatedAt}
@@ -276,7 +278,7 @@ export default async function AnimeDetailPage({
 
           <div className="lg:col-span-4">
             <div className="sticky top-20 space-y-8">
-              <RatingPanel tmdbId={animeId} mediaType="anime" source="anilist" />
+              <RatingPanel tmdbId={animeId} mediaType="anime" source="anilist" title={title} posterPath={detail.coverImage.large ?? detail.coverImage.medium ?? null} />
               <h3 className="text-[11px] uppercase tracking-widest text-muted-foreground font-bold">
                 {t.anime.recommendations}
               </h3>

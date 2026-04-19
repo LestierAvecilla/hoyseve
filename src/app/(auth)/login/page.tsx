@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, CheckCircle2, XCircle, AtSign } from "lucide-react";
 import { t } from "@/lib/i18n";
+import { isValidFormat, normalizeUsername } from "@/lib/validation/username";
+
+type UsernameStatus = "idle" | "checking" | "available" | "taken" | "invalid";
 
 type Tab = "login" | "register";
 
@@ -20,9 +23,38 @@ function LoginPageContent() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<UsernameStatus>("idle");
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (tab !== "register") return;
+    if (!username) { setUsernameStatus("idle"); return; }
+
+    setUsernameStatus("checking");
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const normalized = normalizeUsername(username);
+      if (!isValidFormat(normalized)) {
+        setUsernameStatus("invalid");
+        return;
+      }
+      try {
+        const res = await fetch(`/api/users/${encodeURIComponent(normalized)}/available`);
+        const data = await res.json();
+        if (data.available) setUsernameStatus("available");
+        else setUsernameStatus("taken");
+      } catch {
+        setUsernameStatus("invalid");
+      }
+    }, 300);
+
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,7 +66,7 @@ function LoginPageContent() {
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ name, email, password, ...(username && usernameStatus === "available" ? { username } : {}) }),
         });
         if (!res.ok) {
           const data = await res.json();
@@ -117,6 +149,55 @@ function LoginPageContent() {
                 placeholder={t.login.placeholderName}
                 className="w-full bg-muted/40 border border-border rounded-xl px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/40 transition-all"
               />
+            </div>
+          )}
+
+          {tab === "register" && (
+            <div className="space-y-1.5">
+              <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold block">
+                Nombre de usuario <span className="text-muted-foreground/50 normal-case tracking-normal font-normal">(opcional)</span>
+              </label>
+              <div className="relative">
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/50">
+                  <AtSign size={14} />
+                </span>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/\s/g, ""))}
+                  placeholder="tu_usuario"
+                  className={cn(
+                    "w-full bg-muted/40 border rounded-xl pl-8 pr-10 py-3 text-sm text-foreground placeholder:text-muted-foreground/40 focus:outline-none transition-all",
+                    usernameStatus === "available" ? "border-emerald-500/40 focus:border-emerald-500/60" :
+                    usernameStatus === "taken" || usernameStatus === "invalid" ? "border-rose-400/40 focus:border-rose-400/60" :
+                    "border-border focus:border-primary/40"
+                  )}
+                />
+                {usernameStatus === "checking" && (
+                  <Loader2 size={13} className="animate-spin absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
+                )}
+                {usernameStatus === "available" && (
+                  <CheckCircle2 size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-emerald-500" />
+                )}
+                {(usernameStatus === "taken" || usernameStatus === "invalid") && (
+                  <XCircle size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-rose-400" />
+                )}
+              </div>
+              {usernameStatus === "checking" && (
+                <p className="text-[10px] text-muted-foreground">Verificando disponibilidad...</p>
+              )}
+              {usernameStatus === "available" && (
+                <p className="text-[10px] text-emerald-500">@{username} está disponible</p>
+              )}
+              {usernameStatus === "taken" && (
+                <p className="text-[10px] text-rose-400">Este nombre de usuario ya está en uso</p>
+              )}
+              {usernameStatus === "invalid" && (
+                <p className="text-[10px] text-rose-400">Formato inválido. Usá solo letras, números y guiones bajos</p>
+              )}
+              <p className="text-[10px] text-muted-foreground/60 leading-relaxed">
+                Necesitás un nombre de usuario para que otros puedan ver tu actividad en el feed
+              </p>
             </div>
           )}
 

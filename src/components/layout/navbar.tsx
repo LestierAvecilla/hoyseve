@@ -167,14 +167,15 @@ export function Navbar() {
             className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
           >
             {session.user.image ? (
-              <Image
-                src={session.user.image}
-                alt={session.user.name ?? "User"}
-                width={30}
-                height={30}
-                className="rounded-full border border-border"
-              />
-            ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={session.user.image}
+                  alt={session.user.name ?? "User"}
+                  width={30}
+                  height={30}
+                  className="rounded-full border border-border"
+                />
+              ) : (
               <UserCircle size={26} className="text-muted-foreground" />
             )}
             <span className="text-sm font-medium text-foreground max-w-[120px] truncate">

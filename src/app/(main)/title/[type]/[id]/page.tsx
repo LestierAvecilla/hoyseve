@@ -122,6 +122,7 @@ export default async function TitlePage({
       updatedAt: ratings.updatedAt,
       userName: users.name,
       userImage: users.image,
+      userHandle: users.username,
     })
     .from(ratings)
     .innerJoin(users, eq(ratings.userId, users.id))
@@ -335,6 +336,7 @@ export default async function TitlePage({
                       key={i}
                       userName={r.userName ?? t.title.anonymous}
                       userImage={r.userImage ?? null}
+                      userHandle={r.userHandle ?? null}
                       score={r.score}
                       review={r.review!}
                       updatedAt={r.updatedAt}
@@ -347,7 +349,7 @@ export default async function TitlePage({
 
           <div className="lg:col-span-4">
             <div className="sticky top-20 space-y-8">
-              <RatingPanel tmdbId={Number(id)} mediaType={type} />
+              <RatingPanel tmdbId={Number(id)} mediaType={type} title={title} posterPath={posterUrl(poster_path)} />
               <SimilarTitles titles={similarTitles} />
             </div>
           </div>

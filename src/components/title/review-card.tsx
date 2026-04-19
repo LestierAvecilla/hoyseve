@@ -1,10 +1,11 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
+import { UserLink } from "@/components/shared/user-link";
 
 interface ReviewCardProps {
   userName: string;
   userImage: string | null;
+  userHandle?: string | null;
   score: number;
   review: string;
   updatedAt?: Date;
@@ -25,6 +26,7 @@ function timeAgo(date: Date): string {
 export function ReviewCard({
   userName,
   userImage,
+  userHandle,
   score,
   review,
   updatedAt,
@@ -36,40 +38,22 @@ export function ReviewCard({
         ? "text-yellow-400"
         : "text-rose-400";
 
-  const initials = userName
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
   return (
     <div className="bg-card p-6 rounded-2xl border border-border space-y-4">
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          {/* Avatar real o inicial */}
-          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden relative">
-            {userImage ? (
-              <Image
-                src={userImage}
-                alt={userName}
-                fill
-                className="object-cover"
-                sizes="40px"
-              />
-            ) : (
-              <span className="text-xs font-black text-primary">{initials}</span>
-            )}
-          </div>
-          <div>
-            <p className="text-sm font-bold text-foreground">{userName}</p>
-            {updatedAt && (
-              <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
-                {timeAgo(updatedAt)}
-              </p>
-            )}
-          </div>
+          <UserLink
+            userId=""
+            userName={userName}
+            userAvatar={userImage}
+            userHandle={userHandle ?? null}
+          />
+          {updatedAt && (
+            <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
+              {timeAgo(updatedAt)}
+            </p>
+          )}
         </div>
 
         {/* Score badge */}
