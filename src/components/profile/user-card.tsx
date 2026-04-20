@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { UserCircle2 } from "lucide-react";
 import { FollowButton } from "./follow-button";
 
@@ -26,11 +25,10 @@ export function UserCard({ user, currentUserId, onFollowChange }: UserCardProps)
       {/* Avatar */}
       <div className="w-10 h-10 rounded-xl overflow-hidden bg-[#262a31] flex-shrink-0 flex items-center justify-center border border-[#00e5ff]/10">
         {user.avatarUrl ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={user.avatarUrl}
             alt={user.name ?? user.handle}
-            width={40}
-            height={40}
             className="object-cover w-full h-full"
           />
         ) : (

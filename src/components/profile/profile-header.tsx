@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { BadgeCheck, UserCircle2 } from "lucide-react";
 import { t } from "@/lib/i18n";
 import { FollowButton } from "./follow-button";
@@ -51,12 +50,11 @@ export function ProfileHeader({
           <div className="relative flex-shrink-0">
             <div className="w-32 h-32 md:w-40 md:h-40 rounded-3xl overflow-hidden border-2 border-[#00e5ff]/20 shadow-2xl bg-[#262a31] flex items-center justify-center">
               {image ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   src={image}
                   alt={name ?? emailHandle}
-                  fill
-                  className="object-cover"
-                  sizes="160px"
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 <UserCircle2 size={72} className="text-[#849396]" />
