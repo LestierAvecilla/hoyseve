@@ -6,6 +6,9 @@ import { ActivityCard } from "@/components/feed/activity-card";
 import { t } from "@/lib/i18n";
 import { Users, Globe } from "lucide-react";
 
+type ReactionType = "like" | "love" | "surprise" | "angry";
+type ReactionSummary = Partial<Record<ReactionType, number>>;
+
 type Activity = {
   id: string;
   userId: string;
@@ -21,6 +24,9 @@ type Activity = {
   title: string;
   posterPath: string | null;
   createdAt: string;
+  ratingId?: string | null;
+  reactionSummary?: ReactionSummary;
+  userReaction?: ReactionType | null;
 };
 
 type FeedMeta = {

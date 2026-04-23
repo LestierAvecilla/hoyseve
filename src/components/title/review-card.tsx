@@ -1,6 +1,9 @@
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 import { UserLink } from "@/components/shared/user-link";
+import { ReactionBar } from "@/components/shared/reaction-bar";
+
+type ReactionType = "like" | "love" | "surprise" | "angry";
 
 interface ReviewCardProps {
   userName: string;
@@ -9,6 +12,10 @@ interface ReviewCardProps {
   score: number;
   review: string;
   updatedAt?: Date;
+  ratingId?: string;
+  reactionSummary?: Partial<Record<ReactionType, number>>;
+  userReaction?: ReactionType | null;
+  isGuest?: boolean;
 }
 
 function timeAgo(date: Date): string {
@@ -30,6 +37,10 @@ export function ReviewCard({
   score,
   review,
   updatedAt,
+  ratingId,
+  reactionSummary = {},
+  userReaction = null,
+  isGuest = false,
 }: ReviewCardProps) {
   const scoreColor =
     score >= 8
@@ -67,6 +78,16 @@ export function ReviewCard({
       <p className="text-sm text-muted-foreground leading-relaxed italic">
         &ldquo;{review}&rdquo;
       </p>
+
+      {/* Reaction bar */}
+      {ratingId && (
+        <ReactionBar
+          ratingId={ratingId}
+          summary={reactionSummary}
+          userReaction={userReaction}
+          disabled={isGuest}
+        />
+      )}
     </div>
   );
 }

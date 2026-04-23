@@ -19,9 +19,10 @@ import {
   GENRE_MAP,
 } from "@/lib/tmdb";
 import { db } from "@/lib/db";
-import { ratings, users } from "@/lib/schema";
-import { eq, and, isNotNull, desc } from "drizzle-orm";
+import { ratings, users, reviewReactions } from "@/lib/schema";
+import { eq, and, isNotNull, desc, inArray } from "drizzle-orm";
 import { t } from "@/lib/i18n";
+import { auth } from "@/auth";
 
 type MediaType = "movie" | "tv";
 
@@ -115,26 +116,59 @@ export default async function TitlePage({
   }
 
   // ── Reviews desde DB (JOIN ratings + users) ──
-  const dbReviews = await db
-    .select({
-      score: ratings.score,
-      review: ratings.review,
-      updatedAt: ratings.updatedAt,
-      userName: users.name,
-      userImage: users.image,
-      userHandle: users.username,
-    })
-    .from(ratings)
-    .innerJoin(users, eq(ratings.userId, users.id))
-    .where(
-      and(
-        eq(ratings.tmdbId, Number(id)),
-        eq(ratings.mediaType, type),
-        isNotNull(ratings.review)
+  const [dbReviews, session] = await Promise.all([
+    db
+      .select({
+        id: ratings.id,
+        score: ratings.score,
+        review: ratings.review,
+        updatedAt: ratings.updatedAt,
+        userName: users.name,
+        userImage: users.image,
+        userHandle: users.username,
+      })
+      .from(ratings)
+      .innerJoin(users, eq(ratings.userId, users.id))
+      .where(
+        and(
+          eq(ratings.tmdbId, Number(id)),
+          eq(ratings.mediaType, type),
+          isNotNull(ratings.review)
+        )
       )
-    )
-    .orderBy(desc(ratings.updatedAt))
-    .limit(10);
+      .orderBy(desc(ratings.updatedAt))
+      .limit(10),
+    auth(),
+  ]);
+
+  // ── Reaction data for reviews ──
+  type ReactionType = "like" | "love" | "surprise" | "angry";
+  const reviewRatingIds = dbReviews.map((r) => r.id);
+  const summaryByRatingId: Record<string, Record<string, number>> = {};
+  const userReactionByRatingId: Record<string, ReactionType> = {};
+
+  if (reviewRatingIds.length > 0) {
+    const reactionRows = await db
+      .select({
+        ratingId: reviewReactions.ratingId,
+        reactionType: reviewReactions.reactionType,
+        reactorUserId: reviewReactions.userId,
+      })
+      .from(reviewReactions)
+      .where(inArray(reviewReactions.ratingId, reviewRatingIds));
+
+    for (const row of reactionRows) {
+      if (!summaryByRatingId[row.ratingId]) {
+        summaryByRatingId[row.ratingId] = {};
+      }
+      summaryByRatingId[row.ratingId][row.reactionType] =
+        (summaryByRatingId[row.ratingId][row.reactionType] ?? 0) + 1;
+
+      if (session?.user?.id && row.reactorUserId === session.user.id) {
+        userReactionByRatingId[row.ratingId] = row.reactionType as ReactionType;
+      }
+    }
+  }
 
   const score = Number(vote_average.toFixed(1));
 
@@ -331,15 +365,19 @@ export default async function TitlePage({
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  {dbReviews.map((r, i) => (
+                  {dbReviews.map((r) => (
                     <ReviewCard
-                      key={i}
+                      key={r.id}
                       userName={r.userName ?? t.title.anonymous}
                       userImage={r.userImage ?? null}
                       userHandle={r.userHandle ?? null}
                       score={r.score}
                       review={r.review!}
                       updatedAt={r.updatedAt}
+                      ratingId={r.id}
+                      reactionSummary={summaryByRatingId[r.id] ?? {}}
+                      userReaction={userReactionByRatingId[r.id] ?? null}
+                      isGuest={!session?.user?.id}
                     />
                   ))}
                 </div>

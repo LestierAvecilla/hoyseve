@@ -5,6 +5,10 @@ import { posterUrl } from "@/lib/tmdb";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import { UserLink } from "@/components/shared/user-link";
+import { ReactionBar } from "@/components/shared/reaction-bar";
+
+type ReactionType = "like" | "love" | "surprise" | "angry";
+type ReactionSummary = Partial<Record<ReactionType, number>>;
 
 type Activity = {
   id: string;
@@ -21,6 +25,9 @@ type Activity = {
   title: string;
   posterPath: string | null;
   createdAt: string;
+  ratingId?: string | null;
+  reactionSummary?: ReactionSummary;
+  userReaction?: ReactionType | null;
 };
 
 const typeConfig = {
@@ -71,6 +78,10 @@ export function ActivityCard({ activity }: { activity: Activity }) {
     addSuffix: true,
     locale: es,
   });
+
+  const showReactions =
+    (activity.type === "review" || activity.type === "rating") &&
+    activity.ratingId;
 
   return (
     <div className="flex gap-4 p-4 rounded-2xl bg-[#181c22] hover:bg-[#1c2026] transition-colors border border-white/[0.03]">
@@ -134,6 +145,17 @@ export function ActivityCard({ activity }: { activity: Activity }) {
         <span className="text-[0.65rem] text-[#849396] uppercase tracking-tighter mt-1 block">
           {timeAgo}
         </span>
+
+        {/* Reactions */}
+        {showReactions && (
+          <div className="mt-2">
+            <ReactionBar
+              ratingId={activity.ratingId!}
+              summary={activity.reactionSummary ?? {}}
+              userReaction={activity.userReaction ?? null}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
