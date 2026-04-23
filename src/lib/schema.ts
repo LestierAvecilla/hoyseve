@@ -1,5 +1,6 @@
 import {
   pgTable,
+  pgEnum,
   text,
   timestamp,
   integer,
@@ -9,6 +10,8 @@ import {
   index,
   varchar,
 } from "drizzle-orm/pg-core";
+
+export const reactionType = pgEnum("reaction_type", ["like", "love", "surprise", "angry"]);
 
 // ─── Auth.js required tables ─────────────────────────────────────────────────
 
@@ -139,6 +142,21 @@ export const activities = pgTable(
   ]
 );
 
+export const reviewReactions = pgTable(
+  "review_reactions",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    ratingId: text("rating_id").notNull().references(() => ratings.id, { onDelete: "cascade" }),
+    reactionType: reactionType("reaction_type").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (t) => [
+    unique().on(t.userId, t.ratingId),
+    index("review_reactions_rating_id_idx").on(t.ratingId),
+  ]
+);
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type User = typeof users.$inferSelect;
@@ -147,3 +165,5 @@ export type Rating = typeof ratings.$inferSelect;
 export type WatchlistItem = typeof watchlist.$inferSelect;
 export type Activity = typeof activities.$inferSelect;
 export type Follow = typeof follows.$inferSelect;
+export type ReviewReaction = typeof reviewReactions.$inferSelect;
+export type ReactionTypeValue = "like" | "love" | "surprise" | "angry";

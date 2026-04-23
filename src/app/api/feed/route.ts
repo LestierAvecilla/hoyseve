@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { activities, users, follows } from "@/lib/schema";
+import { activities, users, follows, ratings, reviewReactions } from "@/lib/schema";
 import { eq, and, lt, desc, inArray } from "drizzle-orm";
 
 const DEFAULT_LIMIT = 20;
@@ -49,9 +49,19 @@ export async function GET(req: NextRequest) {
           userName: users.name,
           userAvatar: users.image,
           userHandle: users.username,
+          ratingId: ratings.id,
         })
         .from(activities)
         .innerJoin(users, eq(activities.userId, users.id))
+        .leftJoin(
+          ratings,
+          and(
+            eq(ratings.userId, activities.userId),
+            eq(ratings.tmdbId, activities.tmdbId),
+            eq(ratings.mediaType, activities.mediaType),
+            eq(ratings.source, activities.source)
+          )
+        )
         .where(conditions)
         .orderBy(desc(activities.createdAt))
         .limit(limit + 1);
@@ -94,9 +104,19 @@ export async function GET(req: NextRequest) {
           userName: users.name,
           userAvatar: users.image,
           userHandle: users.username,
+          ratingId: ratings.id,
         })
         .from(activities)
         .innerJoin(users, eq(activities.userId, users.id))
+        .leftJoin(
+          ratings,
+          and(
+            eq(ratings.userId, activities.userId),
+            eq(ratings.tmdbId, activities.tmdbId),
+            eq(ratings.mediaType, activities.mediaType),
+            eq(ratings.source, activities.source)
+          )
+        )
         .where(conditions)
         .orderBy(desc(activities.createdAt))
         .limit(limit + 1);
@@ -104,6 +124,39 @@ export async function GET(req: NextRequest) {
 
     const hasNextPage = rows.length > limit;
     const items = hasNextPage ? rows.slice(0, limit) : rows;
+
+    // Collect all ratingIds to batch-fetch reactions
+    const ratingIds = items
+      .map((row) => row.ratingId)
+      .filter((id): id is string => id !== null);
+
+    // Batch-fetch reaction summaries and viewer reactions
+    type ReactionType = "like" | "love" | "surprise" | "angry";
+    const summaryByRatingId: Record<string, Record<string, number>> = {};
+    const userReactionByRatingId: Record<string, ReactionType> = {};
+
+    if (ratingIds.length > 0) {
+      const reactionRows = await db
+        .select({
+          ratingId: reviewReactions.ratingId,
+          reactionType: reviewReactions.reactionType,
+          reactorUserId: reviewReactions.userId,
+        })
+        .from(reviewReactions)
+        .where(inArray(reviewReactions.ratingId, ratingIds));
+
+      for (const row of reactionRows) {
+        if (!summaryByRatingId[row.ratingId]) {
+          summaryByRatingId[row.ratingId] = {};
+        }
+        summaryByRatingId[row.ratingId][row.reactionType] =
+          (summaryByRatingId[row.ratingId][row.reactionType] ?? 0) + 1;
+
+        if (row.reactorUserId === viewerId) {
+          userReactionByRatingId[row.ratingId] = row.reactionType as ReactionType;
+        }
+      }
+    }
 
     const data = items.map((row) => ({
       id: row.id,
@@ -120,6 +173,9 @@ export async function GET(req: NextRequest) {
       title: row.title,
       posterPath: row.posterPath,
       createdAt: row.createdAt.toISOString(),
+      ratingId: row.ratingId ?? null,
+      reactionSummary: row.ratingId ? (summaryByRatingId[row.ratingId] ?? {}) : {},
+      userReaction: row.ratingId ? (userReactionByRatingId[row.ratingId] ?? null) : null,
     }));
 
     const nextCursor =

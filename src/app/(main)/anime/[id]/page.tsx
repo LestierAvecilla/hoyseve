@@ -9,8 +9,9 @@ import { ReviewCard } from "@/components/title/review-card";
 import { db } from "@/lib/db";
 import { t } from "@/lib/i18n";
 import { getLocalizedAnimeOverview } from "@/lib/tmdb";
-import { ratings, users } from "@/lib/schema";
-import { and, desc, eq, isNotNull } from "drizzle-orm";
+import { ratings, users, reviewReactions } from "@/lib/schema";
+import { and, desc, eq, inArray, isNotNull } from "drizzle-orm";
+import { auth } from "@/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -57,27 +58,60 @@ export default async function AnimeDetailPage({
   );
   const overview = localizedOverview ?? formatAniListDescription(detail.description) ?? t.anime.noDescription;
 
-  const dbReviews = await db
-    .select({
-      score: ratings.score,
-      review: ratings.review,
-      updatedAt: ratings.updatedAt,
-      userName: users.name,
-      userImage: users.image,
-      userHandle: users.username,
-    })
-    .from(ratings)
-    .innerJoin(users, eq(ratings.userId, users.id))
-    .where(
-      and(
-        eq(ratings.tmdbId, animeId),
-        eq(ratings.source, "anilist"),
-        eq(ratings.mediaType, "anime"),
-        isNotNull(ratings.review)
+  const [dbReviews, session] = await Promise.all([
+    db
+      .select({
+        id: ratings.id,
+        score: ratings.score,
+        review: ratings.review,
+        updatedAt: ratings.updatedAt,
+        userName: users.name,
+        userImage: users.image,
+        userHandle: users.username,
+      })
+      .from(ratings)
+      .innerJoin(users, eq(ratings.userId, users.id))
+      .where(
+        and(
+          eq(ratings.tmdbId, animeId),
+          eq(ratings.source, "anilist"),
+          eq(ratings.mediaType, "anime"),
+          isNotNull(ratings.review)
+        )
       )
-    )
-    .orderBy(desc(ratings.updatedAt))
-    .limit(10);
+      .orderBy(desc(ratings.updatedAt))
+      .limit(10),
+    auth(),
+  ]);
+
+  // ── Reaction data for reviews ──
+  type ReactionType = "like" | "love" | "surprise" | "angry";
+  const reviewRatingIds = dbReviews.map((r) => r.id);
+  const summaryByRatingId: Record<string, Record<string, number>> = {};
+  const userReactionByRatingId: Record<string, ReactionType> = {};
+
+  if (reviewRatingIds.length > 0) {
+    const reactionRows = await db
+      .select({
+        ratingId: reviewReactions.ratingId,
+        reactionType: reviewReactions.reactionType,
+        reactorUserId: reviewReactions.userId,
+      })
+      .from(reviewReactions)
+      .where(inArray(reviewReactions.ratingId, reviewRatingIds));
+
+    for (const row of reactionRows) {
+      if (!summaryByRatingId[row.ratingId]) {
+        summaryByRatingId[row.ratingId] = {};
+      }
+      summaryByRatingId[row.ratingId][row.reactionType] =
+        (summaryByRatingId[row.ratingId][row.reactionType] ?? 0) + 1;
+
+      if (session?.user?.id && row.reactorUserId === session.user.id) {
+        userReactionByRatingId[row.ratingId] = row.reactionType as ReactionType;
+      }
+    }
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -260,15 +294,19 @@ export default async function AnimeDetailPage({
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  {dbReviews.map((review, index) => (
+                  {dbReviews.map((review) => (
                     <ReviewCard
-                      key={`${review.userName ?? "anon"}-${index}`}
+                      key={review.id}
                       userName={review.userName ?? t.title.anonymous}
                       userImage={review.userImage ?? null}
                       userHandle={review.userHandle ?? null}
                       score={review.score}
                       review={review.review!}
                       updatedAt={review.updatedAt}
+                      ratingId={review.id}
+                      reactionSummary={summaryByRatingId[review.id] ?? {}}
+                      userReaction={userReactionByRatingId[review.id] ?? null}
+                      isGuest={!session?.user?.id}
                     />
                   ))}
                 </div>
