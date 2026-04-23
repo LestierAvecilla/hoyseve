@@ -7,6 +7,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Home, Bookmark, UserCircle, LogOut, Rss } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
+import { Logo } from "@/components/shared/logo";
 
 const navItems = [
   { href: "/", label: t.nav.home, icon: Home },
@@ -29,16 +30,10 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 h-screen w-[160px] flex flex-col bg-sidebar border-r border-sidebar-border z-40">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-6 border-b border-sidebar-border">
-        <div className="w-7 h-7 rounded bg-cyan/10 flex items-center justify-center flex-shrink-0">
-          <span className="text-cyan text-xs font-bold">H</span>
-        </div>
-        <div className="min-w-0">
-          <p className="text-sm font-bold text-foreground leading-none">HoySeVe</p>
-          <p className="text-[9px] text-muted-foreground uppercase tracking-widest mt-0.5">
-            {t.nav.tagline}
-          </p>
-        </div>
+      <div className="px-2 py-6 border-b border-sidebar-border">
+        <Link href="/" className="inline-block hover:opacity-80 transition-opacity">
+          <Logo className="text-2xl" animate />
+        </Link>
       </div>
 
       {/* Nav */}

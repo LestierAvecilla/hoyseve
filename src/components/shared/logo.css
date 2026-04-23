@@ -1,0 +1,14 @@
+/* Logo blink animation */
+@keyframes blink {
+  0%, 90%, 100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+.logo-animate .logo-eye .logo-lid {
+  animation: blink 4s ease-in-out infinite;
+  transform-origin: center;
+}

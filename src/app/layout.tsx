@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Sora } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
 const geistSans = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
+});
+
+const sora = Sora({
+  variable: "--font-logo",
+  subsets: ["latin"],
+  weight: ["600"],
 });
 
 export const metadata: Metadata = {
@@ -19,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${geistSans.variable} dark`}>
+    <html lang="es" className={`${geistSans.variable} ${sora.variable} dark`}>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <Providers>{children}</Providers>
       </body>
