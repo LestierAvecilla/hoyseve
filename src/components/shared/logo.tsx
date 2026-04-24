@@ -4,9 +4,10 @@ import "./logo.css";
 interface LogoProps {
   className?: string;
   animate?: boolean;
+  collapsed?: boolean;
 }
 
-export function Logo({ className, animate = false }: LogoProps) {
+export function Logo({ className, animate = false, collapsed = false }: LogoProps) {
   return (
     <span
       className={cn(
@@ -17,7 +18,7 @@ export function Logo({ className, animate = false }: LogoProps) {
       style={{ fontFamily: "var(--font-logo, Sora, sans-serif)" }}
       aria-label="HoySeVe"
     >
-      H
+      <span className={cn("logo-letter transition-all duration-300", collapsed && "opacity-0 w-0 -translate-x-2")}>H</span>
       <svg
         className="mx-0.1 logo-eye"
         width="44"
@@ -37,7 +38,7 @@ export function Logo({ className, animate = false }: LogoProps) {
           fill="#22D3EE"
         />
       </svg>
-      ySeVe
+      <span className={cn("logo-letter transition-all duration-300", collapsed && "opacity-0 w-0 translate-x-2")}>ySeVe</span>
     </span>
   );
 }
