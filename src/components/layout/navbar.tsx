@@ -4,10 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
-import { Search, Loader2, Film, Tv, Sparkles, UserCircle } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { Search, Loader2, Film, Tv, Sparkles, UserCircle, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuPositioner,
+  DropdownMenuPopup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface SearchResult {
   id: number;
@@ -63,6 +71,12 @@ export function Navbar() {
     setQuery(val);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => search(val), 300);
+  }
+
+  async function handleLogout() {
+    await signOut({ redirect: false });
+    router.push("/");
+    router.refresh();
   }
 
   function handleSelect(id: number, mediaType: "movie" | "tv" | "anime", source: "tmdb" | "anilist") {
@@ -162,11 +176,9 @@ export function Navbar() {
       {/* Auth area */}
       <div className="flex items-center gap-3">
         {session?.user ? (
-          <Link
-            href="/profile"
-            className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
-          >
-            {session.user.image ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
+              {session.user.image ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={session.user.image}
@@ -176,12 +188,29 @@ export function Navbar() {
                   className="rounded-full border border-border"
                 />
               ) : (
-              <UserCircle size={26} className="text-muted-foreground" />
-            )}
-            <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
-              {session.user.name ?? session.user.email}
-            </span>
-          </Link>
+                <UserCircle size={26} className="text-muted-foreground" />
+              )}
+              <span className="text-sm font-medium text-foreground max-w-[120px] truncate">
+                {session.user.name ?? session.user.email}
+              </span>
+            </DropdownMenuTrigger>
+            <DropdownMenuPositioner align="end">
+              <DropdownMenuPopup>
+                <DropdownMenuItem onClick={() => router.push("/profile")}>
+                  <UserCircle />
+                  Ver perfil
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-rose-400 hover:text-rose-400 focus:text-rose-400"
+                  onClick={handleLogout}
+                >
+                  <LogOut />
+                  Cerrar sesión
+                </DropdownMenuItem>
+              </DropdownMenuPopup>
+            </DropdownMenuPositioner>
+          </DropdownMenu>
         ) : (
           <>
             <Link
