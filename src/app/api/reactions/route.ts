@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { reviewReactions } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 
-const VALID_TYPES = ["like", "love", "surprise", "angry"] as const;
+const VALID_TYPES = ["hype", "sadness", "plot_twist", "skip"] as const;
 type ValidReactionType = (typeof VALID_TYPES)[number];
 
 function isValidType(type: unknown): type is ValidReactionType {

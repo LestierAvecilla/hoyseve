@@ -142,7 +142,7 @@ export default async function TitlePage({
   ]);
 
   // ── Reaction data for reviews ──
-  type ReactionType = "like" | "love" | "surprise" | "angry";
+  type ReactionType = "hype" | "sadness" | "plot_twist" | "skip";
   const reviewRatingIds = dbReviews.map((r) => r.id);
   const summaryByRatingId: Record<string, Record<string, number>> = {};
   const userReactionByRatingId: Record<string, ReactionType> = {};

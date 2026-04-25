@@ -6,7 +6,7 @@ import { ActivityCard } from "@/components/feed/activity-card";
 import { t } from "@/lib/i18n";
 import { Users, Globe } from "lucide-react";
 
-type ReactionType = "like" | "love" | "surprise" | "angry";
+type ReactionType = "hype" | "sadness" | "plot_twist" | "skip";
 type ReactionSummary = Partial<Record<ReactionType, number>>;
 
 type Activity = {

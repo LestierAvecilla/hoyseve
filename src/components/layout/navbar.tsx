@@ -87,7 +87,10 @@ export function Navbar() {
   }
 
   return (
-    <header className="fixed top-0 left-[160px] right-0 h-14 flex items-center justify-between px-6 z-30 border-b border-border bg-background/80 backdrop-blur-md">
+    <header
+      className="fixed top-0 right-0 h-14 flex items-center justify-between px-6 z-30 border-b border-border bg-background/80 backdrop-blur-md transition-[left] duration-300 ease-out"
+      style={{ left: "var(--sidebar-width)" }}
+    >
       {/* Buscador con dropdown */}
       <div ref={containerRef} className="relative">
         <div
@@ -113,7 +116,7 @@ export function Navbar() {
 
         {/* Dropdown de resultados */}
         {isOpen && (
-          <div className="absolute top-full left-0 w-72 bg-input border border-cyan/40 border-t-0 rounded-b-2xl overflow-hidden shadow-2xl shadow-black/50 z-50">
+          <div className="absolute top-full left-0 w-72 bg-popover border border-cyan/40 border-t-0 rounded-b-2xl overflow-hidden shadow-2xl shadow-black/50 z-50">
             {results.length === 0 && !isLoading ? (
               <div className="px-4 py-3 text-xs text-muted-foreground text-center">
                 {t.search.noResults}
