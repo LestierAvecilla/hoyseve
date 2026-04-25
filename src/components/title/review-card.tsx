@@ -3,7 +3,14 @@ import { t } from "@/lib/i18n";
 import { UserLink } from "@/components/shared/user-link";
 import { ReactionBar } from "@/components/shared/reaction-bar";
 
-type ReactionType = "like" | "love" | "surprise" | "angry";
+type ReactionType = "hype" | "sadness" | "plot_twist" | "skip";
+
+const REACTION_EMOJI: Record<ReactionType, string> = {
+  hype: "🔥",
+  sadness: "😭",
+  plot_twist: "😱",
+  skip: "💤",
+};
 
 interface ReviewCardProps {
   userName: string;
@@ -28,6 +35,34 @@ function timeAgo(date: Date): string {
   if (days === 1) return t.title.yesterday;
   if (days < 30) return t.title.timeAgoDays(days);
   return t.title.timeAgoMonths(Math.floor(days / 30));
+}
+
+function ReactionSummaryBadges({ summary }: { summary: Partial<Record<ReactionType, number>> }) {
+  const sorted = (Object.entries(summary) as [ReactionType, number][])
+    .filter(([, count]) => count > 0)
+    .sort(([, a], [, b]) => b - a);
+
+  if (sorted.length === 0) return null;
+
+  const top2 = sorted.slice(0, 2);
+  const rest = sorted.length - 2;
+
+  return (
+    <div className="flex items-center gap-1">
+      {top2.map(([type, count]) => (
+        <span
+          key={type}
+          className="flex items-center gap-0.5 text-xs text-[#849396] bg-white/[0.04] px-1.5 py-0.5 rounded-md border border-white/[0.06]"
+        >
+          <span>{REACTION_EMOJI[type]}</span>
+          <span className="font-semibold tabular-nums">{count}</span>
+        </span>
+      ))}
+      {rest > 0 && (
+        <span className="text-[0.65rem] text-[#849396]">+{rest} más</span>
+      )}
+    </div>
+  );
 }
 
 export function ReviewCard({
@@ -79,14 +114,20 @@ export function ReviewCard({
         &ldquo;{review}&rdquo;
       </p>
 
-      {/* Reaction bar */}
-      {ratingId && (
-        <ReactionBar
-          ratingId={ratingId}
-          summary={reactionSummary}
-          userReaction={userReaction}
-          disabled={isGuest}
-        />
+      {/* Reaction bar (interactive) or summary badges (guest) */}
+      {ratingId ? (
+        isGuest ? (
+          <ReactionSummaryBadges summary={reactionSummary} />
+        ) : (
+          <ReactionBar
+            ratingId={ratingId}
+            summary={reactionSummary}
+            userReaction={userReaction}
+            disabled={false}
+          />
+        )
+      ) : (
+        <ReactionSummaryBadges summary={reactionSummary} />
       )}
     </div>
   );

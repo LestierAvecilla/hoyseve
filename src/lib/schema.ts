@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const reactionType = pgEnum("reaction_type", ["like", "love", "surprise", "angry"]);
+export const reactionType = pgEnum("reaction_type", ["hype", "sadness", "plot_twist", "skip"]);
 
 // ─── Auth.js required tables ─────────────────────────────────────────────────
 
@@ -166,4 +166,4 @@ export type WatchlistItem = typeof watchlist.$inferSelect;
 export type Activity = typeof activities.$inferSelect;
 export type Follow = typeof follows.$inferSelect;
 export type ReviewReaction = typeof reviewReactions.$inferSelect;
-export type ReactionTypeValue = "like" | "love" | "surprise" | "angry";
+export type ReactionTypeValue = "hype" | "sadness" | "plot_twist" | "skip";

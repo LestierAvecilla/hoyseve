@@ -131,7 +131,7 @@ export async function GET(req: NextRequest) {
       .filter((id): id is string => id !== null);
 
     // Batch-fetch reaction summaries and viewer reactions
-    type ReactionType = "like" | "love" | "surprise" | "angry";
+    type ReactionType = "hype" | "sadness" | "plot_twist" | "skip";
     const summaryByRatingId: Record<string, Record<string, number>> = {};
     const userReactionByRatingId: Record<string, ReactionType> = {};
 
