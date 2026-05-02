@@ -57,7 +57,20 @@ export interface AniListMediaRecommendation {
   genres: string[];
 }
 
+export interface AniListExternalLink {
+  id: number;
+  url: string;
+  site: string;
+  type: string;
+  icon: string | null;
+  color: string | null;
+}
+
 export interface AniListMediaDetail extends AniListMedia {
+  trailer?: {
+    site: string;
+    id: string;
+  } | null;
   startDate: {
     year: number | null;
     month: number | null;
@@ -87,6 +100,7 @@ export interface AniListMediaDetail extends AniListMedia {
       mediaRecommendation: AniListMediaRecommendation | null;
     }>;
   };
+  externalLinks?: Array<AniListExternalLink>;
 }
 
 interface AniListPageResponse {
@@ -201,6 +215,10 @@ const ANIME_DETAIL_QUERY = `
       format
       countryOfOrigin
       type
+      trailer {
+        site
+        id
+      }
       startDate {
         year
         month
@@ -256,6 +274,14 @@ const ANIME_DETAIL_QUERY = `
             genres
           }
         }
+      }
+      externalLinks {
+        id
+        url
+        site
+        type
+        icon
+        color
       }
     }
   }

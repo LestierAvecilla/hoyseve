@@ -189,7 +189,8 @@ export function ActivityCard({ activity }: { activity: Activity }) {
               <ReactionSummaryBadges summary={activity.reactionSummary ?? {}} />
             ) : (
               <ReactionBar
-                ratingId={activity.ratingId!}
+                targetId={activity.ratingId!}
+                apiPath="/api/reactions"
                 summary={activity.reactionSummary ?? {}}
                 userReaction={activity.userReaction ?? null}
               />

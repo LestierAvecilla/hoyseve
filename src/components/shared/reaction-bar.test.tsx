@@ -14,7 +14,7 @@ beforeEach(() => {
 
 describe("ReactionBar", () => {
   const baseProps = {
-    ratingId: "rating-1",
+    targetId: "target-1",
     summary: {},
     userReaction: null as null | "hype" | "sadness" | "plot_twist" | "skip",
   };
@@ -173,5 +173,75 @@ describe("ReactionBar", () => {
     const { container } = render(<ReactionBar {...baseProps} />);
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper.className).toContain("overflow-x-auto");
+  });
+
+  // ─── apiPath prop ─────────────────────────────────────────────────────────
+
+  it("uses apiPath prop in fetch URL (default /api/reactions)", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ summary: { hype: 1 }, userReaction: "hype" }),
+    });
+
+    render(<ReactionBar {...baseProps} />);
+    fireEvent.click(screen.getByTestId("reaction-btn-hype"));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/reactions",
+        expect.objectContaining({
+          method: "POST",
+        })
+      );
+    });
+  });
+
+  it("uses custom apiPath in fetch URL when provided", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ summary: { hype: 1 }, userReaction: "hype" }),
+    });
+
+    render(<ReactionBar {...baseProps} apiPath="/api/comment-reactions" targetKey="commentId" />);
+    fireEvent.click(screen.getByTestId("reaction-btn-hype"));
+
+    await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/comment-reactions",
+        expect.objectContaining({
+          method: "POST",
+        })
+      );
+    });
+  });
+
+  it("sends targetKey as the JSON body key", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ summary: { hype: 1 }, userReaction: "hype" }),
+    });
+
+    render(<ReactionBar {...baseProps} />);
+    fireEvent.click(screen.getByTestId("reaction-btn-hype"));
+
+    await waitFor(() => {
+      const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(callBody).toHaveProperty("ratingId", "target-1");
+    });
+  });
+
+  it("sends custom targetKey in body when provided", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ summary: { hype: 1 }, userReaction: "hype" }),
+    });
+
+    render(<ReactionBar {...baseProps} targetKey="commentId" />);
+    fireEvent.click(screen.getByTestId("reaction-btn-hype"));
+
+    await waitFor(() => {
+      const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(callBody).toHaveProperty("commentId", "target-1");
+    });
   });
 });

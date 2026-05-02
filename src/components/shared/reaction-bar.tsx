@@ -7,7 +7,9 @@ type ReactionType = "hype" | "sadness" | "plot_twist" | "skip";
 type ReactionSummary = Partial<Record<ReactionType, number>>;
 
 interface ReactionBarProps {
-  ratingId: string;
+  targetId: string;
+  apiPath?: string;
+  targetKey?: string;
   summary: ReactionSummary;
   userReaction: ReactionType | null;
   disabled?: boolean;
@@ -45,7 +47,7 @@ const REACTIONS: {
   },
 ];
 
-export function ReactionBar({ ratingId, summary, userReaction, disabled = false }: ReactionBarProps) {
+export function ReactionBar({ targetId, apiPath = "/api/reactions", targetKey = "ratingId", summary, userReaction, disabled = false }: ReactionBarProps) {
   const [optimisticSummary, setOptimisticSummary] = useState<ReactionSummary>(summary);
   const [optimisticUserReaction, setOptimisticUserReaction] = useState<ReactionType | null>(userReaction);
   const [pending, setPending] = useState(false);
@@ -82,10 +84,10 @@ export function ReactionBar({ ratingId, summary, userReaction, disabled = false 
     setPending(true);
 
     try {
-      const res = await fetch("/api/reactions", {
+      const res = await fetch(apiPath, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ratingId, type }),
+        body: JSON.stringify({ [targetKey]: targetId, type }),
       });
 
       if (!res.ok) {

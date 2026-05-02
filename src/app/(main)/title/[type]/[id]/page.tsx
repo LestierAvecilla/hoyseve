@@ -5,22 +5,30 @@ import { RatingPanel } from "@/components/title/rating-panel";
 import { ReviewCard } from "@/components/title/review-card";
 import { SimilarTitles } from "@/components/title/similar-titles";
 import { AddToWatchlistButton } from "@/components/title/add-to-watchlist-button";
+import { DetailTabs } from "@/components/detail-tabs";
+import { TrailerEmbed } from "@/components/trailer-embed";
 import {
   getMovieDetail,
   getTVDetail,
   getMovieCredits,
   getTVCredits,
+  getMovieVideos,
+  getTVVideos,
   getSimilarMovies,
   getSimilarTV,
+  getMovieWatchProviders,
+  getTVWatchProviders,
   posterUrl,
   backdropUrl,
   formatRuntime,
   formatDate,
   GENRE_MAP,
+  type StreamingProvider,
 } from "@/lib/tmdb";
+import { StreamingPlatforms } from "@/components/title/streaming-platforms";
 import { db } from "@/lib/db";
-import { ratings, users, reviewReactions } from "@/lib/schema";
-import { eq, and, isNotNull, desc, inArray } from "drizzle-orm";
+import { ratings, users, reviewReactions, reviewComments } from "@/lib/schema";
+import { eq, and, isNotNull, desc, inArray, count } from "drizzle-orm";
 import { t } from "@/lib/i18n";
 import { auth } from "@/auth";
 
@@ -52,14 +60,21 @@ export default async function TitlePage({
   let director!: string;
   let cast!: { id: number; name: string; character: string }[];
   let similarTitles!: { id: number; name: string; genre: string; year: number; posterPath: string | null; mediaType: MediaType }[];
+  let videoId: string | null = null;
+  let providers: StreamingProvider[] = [];
 
   try {
     if (type === "movie") {
-      const [detail, credits, similar] = await Promise.all([
+      const [detail, credits, similar, videos, watchProviders] = await Promise.all([
         getMovieDetail(id),
         getMovieCredits(id),
         getSimilarMovies(id),
+        getMovieVideos(id),
+        getMovieWatchProviders(id),
       ]);
+      const trailerVideo = videos.find((v) => v.type === "Trailer" && v.site === "YouTube");
+      videoId = trailerVideo?.key ?? null;
+      providers = watchProviders;
       title = detail.title;
       overview = detail.overview;
       poster_path = detail.poster_path;
@@ -81,11 +96,16 @@ export default async function TitlePage({
         mediaType: "movie" as MediaType,
       }));
     } else {
-      const [detail, credits, similar] = await Promise.all([
+      const [detail, credits, similar, videos, watchProviders] = await Promise.all([
         getTVDetail(id),
         getTVCredits(id),
         getSimilarTV(id),
+        getTVVideos(id),
+        getTVWatchProviders(id),
       ]);
+      const trailerVideo = videos.find((v) => v.type === "Trailer" && v.site === "YouTube");
+      videoId = trailerVideo?.key ?? null;
+      providers = watchProviders;
       title = detail.name;
       overview = detail.overview;
       poster_path = detail.poster_path;
@@ -167,6 +187,23 @@ export default async function TitlePage({
       if (session?.user?.id && row.reactorUserId === session.user.id) {
         userReactionByRatingId[row.ratingId] = row.reactionType as ReactionType;
       }
+    }
+  }
+
+  // ── Comment counts per review ──
+  const commentCountByRatingId: Record<string, number> = {};
+  if (reviewRatingIds.length > 0) {
+    const commentCountRows = await db
+      .select({
+        ratingId: reviewComments.ratingId,
+        count: count(),
+      })
+      .from(reviewComments)
+      .where(inArray(reviewComments.ratingId, reviewRatingIds))
+      .groupBy(reviewComments.ratingId);
+
+    for (const row of commentCountRows) {
+      commentCountByRatingId[row.ratingId] = row.count;
     }
   }
 
@@ -291,6 +328,12 @@ export default async function TitlePage({
               </div>
             </div>
 
+            <StreamingPlatforms
+              providers={providers}
+              label={t.streaming.availableOn}
+              className="mb-4"
+            />
+
             <AddToWatchlistButton
               tmdbId={Number(id)}
               mediaType={type}
@@ -303,86 +346,85 @@ export default async function TitlePage({
         {/* ─── Cuerpo: 8/4 cols ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
 
-          <div className="lg:col-span-8 space-y-14">
-            <section>
-              <div className="flex gap-8 border-b border-border mb-8">
-                <button className="pb-4 text-sm font-bold uppercase tracking-widest text-primary border-b-2 border-primary">
-                  {t.title.synopsisAndInfo}
-                </button>
-                <button className="pb-4 text-sm font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
-                  {t.title.trailer}
-                </button>
-              </div>
+          <div className="lg:col-span-8">
+            <DetailTabs
+              infoLabel={t.title.synopsisAndInfo}
+              trailerLabel={t.title.trailer}
+              infoContent={
+                <div className="space-y-14">
+                  <div className="space-y-8">
+                    <p className="text-base leading-relaxed text-muted-foreground">{overview || t.title.noOverview}</p>
 
-              <div className="space-y-8">
-                  <p className="text-base leading-relaxed text-muted-foreground">{overview || t.title.noOverview}</p>
-
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="p-6 bg-card rounded-xl border border-border">
-                    <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
-                       {t.title.cast}
-                     </h4>
-                    <ul className="space-y-2">
-                      {cast.map((c) => (
-                        <li key={c.id} className="text-sm">
-                          <span className="text-foreground font-medium">{c.name}</span>{" "}
-                          <span className="text-muted-foreground italic">— {c.character}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="p-6 bg-card rounded-xl border border-border">
+                        <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
+                          {t.title.cast}
+                        </h4>
+                        <ul className="space-y-2">
+                          {cast.map((c) => (
+                            <li key={c.id} className="text-sm">
+                              <span className="text-foreground font-medium">{c.name}</span>{" "}
+                              <span className="text-muted-foreground italic">— {c.character}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div className="p-6 bg-card rounded-xl border border-border">
+                        <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
+                          {type === "movie" ? t.title.production : t.title.networks}
+                        </h4>
+                        {studios.map((s, i) => (
+                          <p key={i} className="text-sm text-foreground mb-1">{s}</p>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-6 bg-card rounded-xl border border-border">
-                    <h4 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
-                       {type === "movie" ? t.title.production : t.title.networks}
-                     </h4>
-                    {studios.map((s, i) => (
-                      <p key={i} className="text-sm text-foreground mb-1">{s}</p>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
 
-            {/* ─── Audience Voice ─── */}
-            <section className="space-y-6">
-              <div className="flex items-end justify-between">
-                <div>
-                  <h3 className="text-2xl font-black tracking-tight">{t.title.audienceVoice}</h3>
-                  {dbReviews.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t.title.communityReviews(dbReviews.length)}
-                    </p>
-                  )}
-                </div>
-              </div>
+                  <section className="space-y-6">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <h3 className="text-2xl font-black tracking-tight">{t.title.audienceVoice}</h3>
+                        {dbReviews.length > 0 && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {t.title.communityReviews(dbReviews.length)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
 
-              {dbReviews.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-14 text-center gap-3 bg-card rounded-2xl border border-border">
-                  <p className="text-muted-foreground text-sm font-medium">{t.title.noReviews}</p>
-                  <p className="text-xs text-muted-foreground/50">
-                    {t.title.noReviewsHint}
-                  </p>
+                    {dbReviews.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-14 text-center gap-3 bg-card rounded-2xl border border-border">
+                        <p className="text-muted-foreground text-sm font-medium">{t.title.noReviews}</p>
+                        <p className="text-xs text-muted-foreground/50">
+                          {t.title.noReviewsHint}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-4">
+                        {dbReviews.map((r) => (
+                          <ReviewCard
+                            key={r.id}
+                            userName={r.userName ?? t.title.anonymous}
+                            userImage={r.userImage ?? null}
+                            userHandle={r.userHandle ?? null}
+                            score={r.score}
+                            review={r.review!}
+                            updatedAt={r.updatedAt}
+                            ratingId={r.id}
+                            reactionSummary={summaryByRatingId[r.id] ?? {}}
+                            userReaction={userReactionByRatingId[r.id] ?? null}
+                            isGuest={!session?.user?.id}
+                            commentCount={commentCountByRatingId[r.id] ?? 0}
+                            currentUserId={session?.user?.id ?? null}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
                 </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {dbReviews.map((r) => (
-                    <ReviewCard
-                      key={r.id}
-                      userName={r.userName ?? t.title.anonymous}
-                      userImage={r.userImage ?? null}
-                      userHandle={r.userHandle ?? null}
-                      score={r.score}
-                      review={r.review!}
-                      updatedAt={r.updatedAt}
-                      ratingId={r.id}
-                      reactionSummary={summaryByRatingId[r.id] ?? {}}
-                      userReaction={userReactionByRatingId[r.id] ?? null}
-                      isGuest={!session?.user?.id}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
+              }
+              trailerContent={<TrailerEmbed videoId={videoId} />}
+            />
           </div>
 
           <div className="lg:col-span-4">
