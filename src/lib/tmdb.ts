@@ -107,6 +107,12 @@ export interface TMDBCredits {
   crew: TMDBCrewMember[];
 }
 
+export interface TMDBVideoResult {
+  key: string;
+  site: string;
+  type: string;
+}
+
 export interface TMDBSearchResult {
   id: number;
   media_type: "movie" | "tv" | "person";
@@ -210,6 +216,13 @@ export interface TMDBDiscoverMovie extends TMDBMovie {}
 
 export interface TMDBDiscoverTV extends TMDBTVShow {
   original_name: string;
+}
+
+export interface StreamingProvider {
+  providerId: number;
+  providerName: string;
+  logoPath: string;
+  displayPriority: number;
 }
 
 interface DiscoverOptions {
@@ -365,6 +378,18 @@ export function formatRuntime(minutes: number | null): string {
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
 
+/** Obtiene videos de una película desde movie/{id}/videos */
+export async function getMovieVideos(id: string | number): Promise<TMDBVideoResult[]> {
+  const data = await fetchTMDB<{ results: TMDBVideoResult[] }>(`movie/${id}/videos`);
+  return data.results;
+}
+
+/** Obtiene videos de una serie desde tv/{id}/videos */
+export async function getTVVideos(id: string | number): Promise<TMDBVideoResult[]> {
+  const data = await fetchTMDB<{ results: TMDBVideoResult[] }>(`tv/${id}/videos`);
+  return data.results;
+}
+
 /** Formatea fecha ISO → "23 dic. 2020" */
 export function formatDate(dateStr: string): string {
   if (!dateStr) return "N/A";
@@ -373,4 +398,85 @@ export function formatDate(dateStr: string): string {
     month: "short",
     day: "numeric",
   });
+}
+
+// ─── Tipos internos para watch providers ──────────────────────────────────────
+
+export interface TMDBWatchProviderEntry {
+  logo_path: string | null;
+  provider_id: number;
+  provider_name: string;
+  display_priority: number;
+}
+
+export interface TMDBWatchProvidersResponse {
+  id: number;
+  results: Record<
+    string,
+    {
+      link?: string;
+      flatrate?: TMDBWatchProviderEntry[];
+    }
+  >;
+}
+
+// ─── Watch Providers ──────────────────────────────────────────────────────────
+
+export function extractWatchProviders(
+  data: TMDBWatchProvidersResponse
+): StreamingProvider[] {
+  // MX con fallback a US — solo si MX no tiene flatrate usamos US
+  const mxFlatrate = data.results.MX?.flatrate;
+  const flatrate =
+    mxFlatrate && mxFlatrate.length > 0
+      ? mxFlatrate
+      : data.results.US?.flatrate ?? [];
+
+  return flatrate
+    .filter((p) => p.logo_path != null)
+    .map((p) => ({
+      providerId: p.provider_id,
+      providerName: p.provider_name,
+      logoPath: `${IMG_BASE}/w45${p.logo_path}`,
+      displayPriority: p.display_priority,
+    }))
+    .sort((a, b) => a.displayPriority - b.displayPriority);
+}
+
+/** Obtiene proveedores de streaming (suscripción) para una película desde TMDB.
+ *  Usa región MX con fallback a US. Solo plataformas flatrate. */
+export async function getMovieWatchProviders(
+  id: string | number
+): Promise<StreamingProvider[]> {
+  try {
+    const data = await fetchTMDB<TMDBWatchProvidersResponse>(
+      `movie/${id}/watch/providers`
+    );
+    return extractWatchProviders(data);
+  } catch (err) {
+    console.warn(
+      `Failed to fetch movie watch providers for ${id}:`,
+      err instanceof Error ? err.message : err
+    );
+    return [];
+  }
+}
+
+/** Obtiene proveedores de streaming (suscripción) para una serie desde TMDB.
+ *  Usa región MX con fallback a US. Solo plataformas flatrate. */
+export async function getTVWatchProviders(
+  id: string | number
+): Promise<StreamingProvider[]> {
+  try {
+    const data = await fetchTMDB<TMDBWatchProvidersResponse>(
+      `tv/${id}/watch/providers`
+    );
+    return extractWatchProviders(data);
+  } catch (err) {
+    console.warn(
+      `Failed to fetch TV watch providers for ${id}:`,
+      err instanceof Error ? err.message : err
+    );
+    return [];
+  }
 }

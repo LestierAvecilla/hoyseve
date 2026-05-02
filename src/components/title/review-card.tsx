@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
 import { UserLink } from "@/components/shared/user-link";
 import { ReactionBar } from "@/components/shared/reaction-bar";
+import { CommentSection } from "@/components/title/comment-section";
 
 type ReactionType = "hype" | "sadness" | "plot_twist" | "skip";
 
@@ -23,6 +24,8 @@ interface ReviewCardProps {
   reactionSummary?: Partial<Record<ReactionType, number>>;
   userReaction?: ReactionType | null;
   isGuest?: boolean;
+  commentCount?: number;
+  currentUserId?: string | null;
 }
 
 function timeAgo(date: Date): string {
@@ -76,6 +79,8 @@ export function ReviewCard({
   reactionSummary = {},
   userReaction = null,
   isGuest = false,
+  commentCount = 0,
+  currentUserId = null,
 }: ReviewCardProps) {
   const scoreColor =
     score >= 8
@@ -120,7 +125,8 @@ export function ReviewCard({
           <ReactionSummaryBadges summary={reactionSummary} />
         ) : (
           <ReactionBar
-            ratingId={ratingId}
+            targetId={ratingId}
+            apiPath="/api/reactions"
             summary={reactionSummary}
             userReaction={userReaction}
             disabled={false}
@@ -128,6 +134,16 @@ export function ReviewCard({
         )
       ) : (
         <ReactionSummaryBadges summary={reactionSummary} />
+      )}
+
+      {/* Comment section */}
+      {ratingId && (
+        <CommentSection
+          ratingId={ratingId}
+          commentCount={commentCount}
+          isGuest={isGuest}
+          currentUserId={currentUserId ?? null}
+        />
       )}
     </div>
   );

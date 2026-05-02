@@ -157,6 +157,46 @@ export const reviewReactions = pgTable(
   ]
 );
 
+export const reviewComments = pgTable(
+  "review_comments",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    ratingId: text("rating_id")
+      .notNull()
+      .references(() => ratings.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    parentId: text("parent_id").references((): any => reviewComments.id, { onDelete: "cascade" }),
+    body: text("body").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
+  },
+  (t) => [
+    index("review_comments_rating_id_created_at_idx").on(t.ratingId, t.createdAt),
+    index("review_comments_parent_id_idx").on(t.parentId),
+  ]
+);
+
+export const commentReactions = pgTable(
+  "comment_reactions",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    commentId: text("comment_id")
+      .notNull()
+      .references(() => reviewComments.id, { onDelete: "cascade" }),
+    reactionType: reactionType("reaction_type").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (t) => [
+    unique().on(t.userId, t.commentId),
+    index("comment_reactions_comment_id_idx").on(t.commentId),
+  ]
+);
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type User = typeof users.$inferSelect;
@@ -167,3 +207,7 @@ export type Activity = typeof activities.$inferSelect;
 export type Follow = typeof follows.$inferSelect;
 export type ReviewReaction = typeof reviewReactions.$inferSelect;
 export type ReactionTypeValue = "hype" | "sadness" | "plot_twist" | "skip";
+export type ReviewComment = typeof reviewComments.$inferSelect;
+export type NewReviewComment = typeof reviewComments.$inferInsert;
+export type CommentReaction = typeof commentReactions.$inferSelect;
+export type NewCommentReaction = typeof commentReactions.$inferInsert;

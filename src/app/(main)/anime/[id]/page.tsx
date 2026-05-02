@@ -4,13 +4,17 @@ import { notFound } from "next/navigation";
 import { ChevronLeft, Star } from "lucide-react";
 import { formatAniListDescription, getAnimeDetail } from "@/lib/anilist";
 import { AddToWatchlistButton } from "@/components/title/add-to-watchlist-button";
+import { StreamingPlatforms } from "@/components/title/streaming-platforms";
+import type { StreamingProvider } from "@/lib/tmdb";
 import { RatingPanel } from "@/components/title/rating-panel";
 import { ReviewCard } from "@/components/title/review-card";
+import { DetailTabs } from "@/components/detail-tabs";
+import { TrailerEmbed } from "@/components/trailer-embed";
 import { db } from "@/lib/db";
 import { t } from "@/lib/i18n";
 import { getLocalizedAnimeOverview } from "@/lib/tmdb";
-import { ratings, users, reviewReactions } from "@/lib/schema";
-import { and, desc, eq, inArray, isNotNull } from "drizzle-orm";
+import { ratings, users, reviewReactions, reviewComments } from "@/lib/schema";
+import { and, desc, eq, inArray, isNotNull, count } from "drizzle-orm";
 import { auth } from "@/auth";
 
 export const dynamic = "force-dynamic";
@@ -57,6 +61,20 @@ export default async function AnimeDetailPage({
     detail.seasonYear
   );
   const overview = localizedOverview ?? formatAniListDescription(detail.description) ?? t.anime.noDescription;
+  const videoId = detail.trailer?.site === "youtube" ? detail.trailer.id : null;
+
+  // ── Streaming providers desde AniList externalLinks ──
+  const providers: StreamingProvider[] = (detail.externalLinks ?? [])
+    .filter(
+      (link) =>
+        link.type === "STREAMING" && link.icon != null
+    )
+    .map((link) => ({
+      providerId: link.id,
+      providerName: link.site,
+      logoPath: link.icon!,
+      displayPriority: 0,
+    }));
 
   const [dbReviews, session] = await Promise.all([
     db
@@ -110,6 +128,23 @@ export default async function AnimeDetailPage({
       if (session?.user?.id && row.reactorUserId === session.user.id) {
         userReactionByRatingId[row.ratingId] = row.reactionType as ReactionType;
       }
+    }
+  }
+
+  // ── Comment counts per review ──
+  const commentCountByRatingId: Record<string, number> = {};
+  if (reviewRatingIds.length > 0) {
+    const commentCountRows = await db
+      .select({
+        ratingId: reviewComments.ratingId,
+        count: count(),
+      })
+      .from(reviewComments)
+      .where(inArray(reviewComments.ratingId, reviewRatingIds))
+      .groupBy(reviewComments.ratingId);
+
+    for (const row of commentCountRows) {
+      commentCountByRatingId[row.ratingId] = row.count;
     }
   }
 
@@ -176,60 +211,63 @@ export default async function AnimeDetailPage({
               ))}
             </div>
 
-            <h1 className="text-6xl lg:text-7xl font-black tracking-tighter text-foreground mb-3 leading-none">
+            <h1 className="text-6xl lg:text-7xl font-black tracking-tighter text-foreground mb-6 leading-none">
               {title}
             </h1>
 
-            <p className="text-xs uppercase tracking-[0.3em] text-primary/80 font-bold mb-6">
-              {t.anime.source}
-            </p>
+            <div className="flex flex-wrap items-center gap-8 mb-10">
+              <div className="flex items-center gap-3">
+                <span className="text-5xl font-black text-primary leading-none">{score}</span>
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-1">
+                    <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                    <span className="text-sm font-bold text-foreground">/ 10</span>
+                  </div>
+                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
+                    {t.title.anilistAverage}
+                  </span>
+                </div>
+              </div>
 
-            <p className="text-muted-foreground text-base leading-relaxed mb-10 max-w-3xl">
-              {overview}
-            </p>
+              <div className="h-10 w-px bg-border" />
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-4 mb-10">
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
-                  {t.anime.year}
-                </p>
-                <p className="text-sm font-semibold text-foreground">
-                  {formatDate(detail.startDate.year, detail.startDate.month, detail.startDate.day)}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
-                  {t.anime.episodes}
-                </p>
-                <p className="text-sm font-semibold text-foreground">{detail.episodes ?? t.category.notAvailable}</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
-                  {t.anime.duration}
-                </p>
-                <p className="text-sm font-semibold text-foreground">{detail.duration ? `${detail.duration} min` : t.category.notAvailable}</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
-                  {t.anime.format}
-                </p>
-                <p className="text-sm font-semibold text-foreground">{detail.format ?? t.category.notAvailable}</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
-                  {t.anime.studio}
-                </p>
-                <p className="text-sm font-semibold text-foreground">{studios[0] ?? t.category.notAvailable}</p>
-              </div>
-              <div>
-                <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
-                  {t.anime.status}
-                </p>
-                <p className="text-sm font-semibold text-foreground">{detail.status ?? t.category.notAvailable}</p>
+              <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
+                    {t.anime.year}
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">
+                    {formatDate(detail.startDate.year, detail.startDate.month, detail.startDate.day)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
+                    {t.anime.episodes}
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">{detail.episodes ?? t.category.notAvailable}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
+                    {t.anime.duration}
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">{detail.duration ? `${detail.duration} min` : t.category.notAvailable}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-0.5">
+                    {t.anime.studio}
+                  </p>
+                  <p className="text-sm font-semibold text-foreground">{studios[0] ?? t.category.notAvailable}</p>
+                </div>
               </div>
             </div>
 
             <div className="mt-8">
+              <StreamingPlatforms
+                providers={providers}
+                label={t.streaming.availableOn}
+                className="mb-4"
+              />
+
               <AddToWatchlistButton
                 tmdbId={animeId}
                 source="anilist"
@@ -242,76 +280,91 @@ export default async function AnimeDetailPage({
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <div className="lg:col-span-8 space-y-14">
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 bg-card rounded-xl border border-border">
-                <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
-                  {t.anime.characters}
-                </h3>
-                <ul className="space-y-3">
-                  {characters.map((character) => (
-                    <li key={character.node.id} className="text-sm">
-                      <span className="text-foreground font-medium">{character.node.name.full}</span>{" "}
-                      <span className="text-muted-foreground italic">— {character.role ?? t.category.notAvailable}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <div className="lg:col-span-8">
+            <DetailTabs
+              infoLabel={t.anime.information}
+              trailerLabel={t.anime.trailer}
+              infoContent={
+                <div className="space-y-14">
+                  <div className="space-y-8">
+                    <p className="text-base leading-relaxed text-muted-foreground">{overview}</p>
+                  </div>
 
-              <div className="p-6 bg-card rounded-xl border border-border">
-                <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
-                  {t.anime.staff}
-                </h3>
-                <ul className="space-y-3">
-                  {staff.map((person) => (
-                    <li key={person.node.id} className="text-sm">
-                      <span className="text-foreground font-medium">{person.node.name.full}</span>{" "}
-                      <span className="text-muted-foreground italic">— {person.role ?? t.category.notAvailable}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
+                  <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-6 bg-card rounded-xl border border-border">
+                      <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
+                        {t.anime.characters}
+                      </h3>
+                      <ul className="space-y-3">
+                        {characters.map((character) => (
+                          <li key={character.node.id} className="text-sm">
+                            <span className="text-foreground font-medium">{character.node.name.full}</span>{" "}
+                            <span className="text-muted-foreground italic">— {character.role ?? t.category.notAvailable}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
 
-            <section className="space-y-6">
-              <div className="flex items-end justify-between">
-                <div>
-                  <h3 className="text-2xl font-black tracking-tight">{t.anime.audienceVoice}</h3>
-                  {dbReviews.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {t.title.communityReviews(dbReviews.length)}
-                    </p>
-                  )}
-                </div>
-              </div>
+                    <div className="p-6 bg-card rounded-xl border border-border">
+                      <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-4">
+                        {t.anime.staff}
+                      </h3>
+                      <ul className="space-y-3">
+                        {staff.map((person) => (
+                          <li key={person.node.id} className="text-sm">
+                            <span className="text-foreground font-medium">{person.node.name.full}</span>{" "}
+                            <span className="text-muted-foreground italic">— {person.role ?? t.category.notAvailable}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </section>
 
-              {dbReviews.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-14 text-center gap-3 bg-card rounded-2xl border border-border">
-                  <p className="text-muted-foreground text-sm font-medium">{t.title.noReviews}</p>
-                  <p className="text-xs text-muted-foreground/50">
-                    {t.title.noReviewsHint}
-                  </p>
+                  <section className="space-y-6">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <h3 className="text-2xl font-black tracking-tight">{t.anime.audienceVoice}</h3>
+                        {dbReviews.length > 0 && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {t.title.communityReviews(dbReviews.length)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {dbReviews.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-14 text-center gap-3 bg-card rounded-2xl border border-border">
+                        <p className="text-muted-foreground text-sm font-medium">{t.title.noReviews}</p>
+                        <p className="text-xs text-muted-foreground/50">
+                          {t.title.noReviewsHint}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-4">
+                        {dbReviews.map((review) => (
+                          <ReviewCard
+                            key={review.id}
+                            userName={review.userName ?? t.title.anonymous}
+                            userImage={review.userImage ?? null}
+                            userHandle={review.userHandle ?? null}
+                            score={review.score}
+                            review={review.review!}
+                            updatedAt={review.updatedAt}
+                            ratingId={review.id}
+                            reactionSummary={summaryByRatingId[review.id] ?? {}}
+                            userReaction={userReactionByRatingId[review.id] ?? null}
+                            isGuest={!session?.user?.id}
+                            commentCount={commentCountByRatingId[review.id] ?? 0}
+                            currentUserId={session?.user?.id ?? null}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </section>
                 </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {dbReviews.map((review) => (
-                    <ReviewCard
-                      key={review.id}
-                      userName={review.userName ?? t.title.anonymous}
-                      userImage={review.userImage ?? null}
-                      userHandle={review.userHandle ?? null}
-                      score={review.score}
-                      review={review.review!}
-                      updatedAt={review.updatedAt}
-                      ratingId={review.id}
-                      reactionSummary={summaryByRatingId[review.id] ?? {}}
-                      userReaction={userReactionByRatingId[review.id] ?? null}
-                      isGuest={!session?.user?.id}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
+              }
+              trailerContent={<TrailerEmbed videoId={videoId} />}
+            />
           </div>
 
           <div className="lg:col-span-4">
