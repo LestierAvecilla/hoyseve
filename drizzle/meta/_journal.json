@@ -29,6 +29,34 @@
       "when": 1776639070893,
       "tag": "0003_youthful_sersi",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1776924903000,
+      "tag": "0004_review_reactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777003891000,
+      "tag": "0005_update_reaction_enum",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1777622675000,
+      "tag": "0006_review_comments",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1777688997000,
+      "tag": "0007_comment_reactions",
+      "breakpoints": true
     }
   ]
 }

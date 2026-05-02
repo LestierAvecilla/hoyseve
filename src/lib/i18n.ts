@@ -216,6 +216,7 @@ export const t = {
     studio: "Estudio",
     network: "Cadena",
     tmdbAverage: "Promedio TMDB",
+    anilistAverage: "Promedio AniList",
     similarTitles: "Títulos similares",
     audienceVoice: "Voz de la audiencia",
     communityReviews: (n: number) => `${n} reseña${n !== 1 ? "s" : ""} de la comunidad`,
@@ -293,5 +294,40 @@ export const t = {
     format: "Formato",
     studio: "Estudio",
     status: "Estado",
+    information: "Información",
+    trailer: "Tráiler",
+    noTrailer: "No hay Trailer disponible",
+  },
+
+  streaming: {
+    availableOn: "Disponible en",
+    watchOn: "Ver en",
+    noInfo: "Sin información de plataformas",
+  },
+
+  // ── Review Comments ─────────────────────────────────────────────────────────
+  comments: {
+    show: (n: number) => `Ver ${n} comentario${n !== 1 ? "s" : ""}`,
+    hide: "Ocultar comentarios",
+    showReplies: (n: number) => `Ver ${n} respuesta${n !== 1 ? "s" : ""}`,
+    hideReplies: "Ocultar respuestas",
+    loadMore: (n: number) => `Ver ${n} comentario${n !== 1 ? "s" : ""} más`,
+    reply: "Responder",
+    replyPlaceholder: "Escribí tu respuesta...",
+    submit: "Enviar",
+    delete: "Eliminar",
+    deleted: "eliminado",
+    deleteConfirm: "¿Eliminar este comentario?",
+    deleteHasReplies: (n: number) =>
+      `Este comentario tiene ${n} respuesta${n !== 1 ? "s" : ""}. No se puede eliminar.`,
+    deleteNoUndo: "Esta acción no se puede deshacer.",
+    signInToComment: "Inicia sesión para comentar",
+    empty: "Sé el primero en comentar",
+    submitting: "Enviando...",
+    addComment: "Comentar",
+    addCommentPlaceholder: "Escribí tu comentario...",
+    cancel: "Cancelar",
+    loading: "Cargando comentarios...",
+    loadError: "No se pudieron cargar los comentarios.",
   },
 } as const;
