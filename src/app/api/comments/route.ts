@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { reviewComments, ratings, users, commentReactions } from "@/lib/schema";
 import { eq, and, asc, inArray, isNull } from "drizzle-orm";
+import { createNotification } from "@/lib/notifications/create";
+import { parseMentions } from "@/lib/notifications/mention-parse";
 
 // ─── GET: fetch comments for a rating (public) ─────────────────────────────────
 
@@ -141,6 +143,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Rating not found" }, { status: 404 });
     }
 
+    let parentAuthorId: string | null = null;
+
     // If parentId provided, validate it exists and belongs to same rating
     if (parentId) {
       if (typeof parentId !== "string") {
@@ -148,7 +152,7 @@ export async function POST(req: NextRequest) {
       }
 
       const [parentRow] = await db
-        .select({ id: reviewComments.id, ratingId: reviewComments.ratingId })
+        .select({ id: reviewComments.id, ratingId: reviewComments.ratingId, userId: reviewComments.userId })
         .from(reviewComments)
         .where(eq(reviewComments.id, parentId))
         .limit(1);
@@ -163,6 +167,8 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
+
+      parentAuthorId = parentRow.userId;
     }
 
     // Insert the comment
@@ -178,6 +184,36 @@ export async function POST(req: NextRequest) {
         parentId: resolvedParentId,
       })
       .returning();
+
+    // ─── Notification side-effects ──────────────────────────────────────────
+    try {
+      const commenterId = session.user.id;
+
+      // REPLY_ON_COMMENT: if replying to someone else's comment
+      if (resolvedParentId && parentAuthorId && parentAuthorId !== commenterId) {
+        await createNotification({
+          type: "REPLY_ON_COMMENT",
+          actorId: commenterId,
+          recipientId: parentAuthorId,
+          targetId: resolvedParentId,
+          targetType: "comment",
+        });
+      }
+
+      // MENTION: parse @username mentions in the body
+      const mentionedIds = await parseMentions(trimmedBody, commenterId);
+      for (const mentionedId of mentionedIds) {
+        await createNotification({
+          type: "MENTION",
+          actorId: commenterId,
+          recipientId: mentionedId,
+          targetId: inserted.id,
+          targetType: "comment",
+        });
+      }
+    } catch (err) {
+      console.error("[comments notification]", err);
+    }
 
     // Fetch the inserted comment with user info
     const [comment] = await db

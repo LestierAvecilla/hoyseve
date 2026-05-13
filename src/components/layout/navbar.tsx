@@ -8,6 +8,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Search, Loader2, Film, Tv, Sparkles, UserCircle, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/i18n";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -178,6 +179,7 @@ export function Navbar() {
 
       {/* Auth area */}
       <div className="flex items-center gap-3">
+        <NotificationBell />
         {session?.user ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">

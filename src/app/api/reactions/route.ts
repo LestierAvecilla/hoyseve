@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { reviewReactions } from "@/lib/schema";
+import { reviewReactions, ratings } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
+import { createNotification } from "@/lib/notifications/create";
 
 const VALID_TYPES = ["hype", "sadness", "plot_twist", "skip"] as const;
 type ValidReactionType = (typeof VALID_TYPES)[number];
@@ -58,6 +59,28 @@ export async function POST(req: NextRequest) {
       ratingId,
       reactionType: type,
     });
+
+    // Notification side-effect: notify review author of new reaction
+    try {
+      const [ratingRow] = await db
+        .select({ userId: ratings.userId })
+        .from(ratings)
+        .where(eq(ratings.id, ratingId))
+        .limit(1);
+
+      if (ratingRow && ratingRow.userId !== userId) {
+        await createNotification({
+          type: "REACTION_ON_REVIEW",
+          actorId: userId,
+          recipientId: ratingRow.userId,
+          targetId: ratingId,
+          targetType: "review",
+        });
+      }
+    } catch (err) {
+      // Fire-and-forget: don't fail the reaction request if notification fails
+      console.error("[reactions notification]", err);
+    }
   }
 
   // Build summary of all reactions for this rating
