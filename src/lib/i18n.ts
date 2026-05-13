@@ -330,4 +330,21 @@ export const t = {
     loading: "Cargando comentarios...",
     loadError: "No se pudieron cargar los comentarios.",
   },
+
+  // ── Notifications ───────────────────────────────────────────────────────────
+  notifications: {
+    reactionOnReview: "{actors} reaccionaron a tu reseña",
+    reactionOnComment: "{actors} reaccionaron a tu comentario",
+    replyOnComment: "{actors} respondieron tu comentario",
+    mention: "{actors} te mencionaron en un comentario",
+    singular: {
+      reactionOnReview: "{actor} reaccionó a tu reseña",
+      reactionOnComment: "{actor} reaccionó a tu comentario",
+      replyOnComment: "{actor} respondió tu comentario",
+      mention: "{actor} te mencionó en un comentario",
+    },
+    markAllRead: "Marcar todas como leídas",
+    empty: "No tienes notificaciones todavía",
+    deletedContent: "[contenido eliminado]",
+  },
 } as const;

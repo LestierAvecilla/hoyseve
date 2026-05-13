@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { commentReactions, reviewComments } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
+import { createNotification } from "@/lib/notifications/create";
 
 const VALID_TYPES = ["hype", "sadness", "plot_twist", "skip"] as const;
 type ValidReactionType = (typeof VALID_TYPES)[number];
@@ -32,9 +33,9 @@ export async function POST(req: NextRequest) {
 
   const userId = session.user.id;
 
-  // Validate commentId exists
+  // Validate commentId exists and get author
   const [commentRow] = await db
-    .select({ id: reviewComments.id })
+    .select({ id: reviewComments.id, userId: reviewComments.userId })
     .from(reviewComments)
     .where(eq(reviewComments.id, commentId))
     .limit(1);
@@ -69,6 +70,21 @@ export async function POST(req: NextRequest) {
       commentId,
       reactionType: type,
     });
+
+    // Notification side-effect: notify comment author of new reaction
+    try {
+      if (commentRow.userId !== userId) {
+        await createNotification({
+          type: "REACTION_ON_COMMENT",
+          actorId: userId,
+          recipientId: commentRow.userId,
+          targetId: commentId,
+          targetType: "comment",
+        });
+      }
+    } catch (err) {
+      console.error("[comment-reactions notification]", err);
+    }
   }
 
   // Build summary of all reactions for this comment

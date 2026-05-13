@@ -13,6 +13,18 @@ import {
 
 export const reactionType = pgEnum("reaction_type", ["hype", "sadness", "plot_twist", "skip"]);
 
+export const notificationType = pgEnum("notification_type", [
+  "REACTION_ON_REVIEW",
+  "REACTION_ON_COMMENT",
+  "REPLY_ON_COMMENT",
+  "MENTION",
+]);
+
+export const notificationTarget = pgEnum("notification_target", [
+  "review",
+  "comment",
+]);
+
 // ─── Auth.js required tables ─────────────────────────────────────────────────
 
 export const users = pgTable("users", {
@@ -197,6 +209,27 @@ export const commentReactions = pgTable(
   ]
 );
 
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: notificationType("type").notNull(),
+    actorId: text("actor_id").references(() => users.id, { onDelete: "set null" }),
+    targetId: text("target_id").notNull(),
+    targetType: notificationTarget("target_type").notNull(),
+    groupKey: varchar("group_key", { length: 200 }).notNull(),
+    read: boolean("read").notNull().default(false),
+    createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
+  },
+  (t) => [
+    index("notifications_user_read_created_idx").on(t.userId, t.read, t.createdAt),
+    index("notifications_user_group_created_idx").on(t.userId, t.groupKey, t.createdAt),
+  ]
+);
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type User = typeof users.$inferSelect;
@@ -211,3 +244,7 @@ export type ReviewComment = typeof reviewComments.$inferSelect;
 export type NewReviewComment = typeof reviewComments.$inferInsert;
 export type CommentReaction = typeof commentReactions.$inferSelect;
 export type NewCommentReaction = typeof commentReactions.$inferInsert;
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;
+export type NotificationTypeValue = (typeof notificationType.enumValues)[number];
+export type NotificationTargetValue = (typeof notificationTarget.enumValues)[number];
